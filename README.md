@@ -13,6 +13,12 @@ It combines **Speech-to-Text (STT)**, **Optical Character Recognition (OCR)**, *
 
 ---
 
+## 🧩 Design Documents
+- [📄 Design Document (PPT version)](https://www.dropbox.com/scl/fi/uqh8n3i9vfo0t3zq8bpsl/Design.pptx?rlkey=npz59jbcbgqjw819vjuax3mp9&st=lj6zfrx5&dl=0)  
+- [📘 Design Document (PDF version)](https://www.dropbox.com/scl/fi/l2u33zvy8e76ahx5fv9ax/Design.pdf?rlkey=jnohv4villlx1i075bugz26io&st=n41qy9e7&dl=0)
+
+---
+
 ## 🧰 Tech Stack
 **Python**, **FastAPI**, **LLaMA**, **Mistral**, **Whisper**, **Donut OCR**, **IndicBERT**, **PostgreSQL**, **Docker**
 
@@ -26,11 +32,6 @@ Here’s the system architecture — showing how each module connects and proces
 
 ---
 
-## 🧩 Design Documents
-- [📄 Design Document (PPT version)](https://www.dropbox.com/scl/fi/uqh8n3i9vfo0t3zq8bpsl/Design.pptx?rlkey=npz59jbcbgqjw819vjuax3mp9&st=lj6zfrx5&dl=0)  
-- [📘 Design Document (PDF version)](https://www.dropbox.com/scl/fi/l2u33zvy8e76ahx5fv9ax/Design.pdf?rlkey=jnohv4villlx1i075bugz26io&st=n41qy9e7&dl=0)
-
----
 
 ## 🚀 Highlights
 - Fine-tuned open-weight LLMs for **domain-specific legal accuracy**.  
