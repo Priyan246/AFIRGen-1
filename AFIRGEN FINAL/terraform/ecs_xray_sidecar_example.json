@@ -1,0 +1,142 @@
+{
+  "family": "afirgen-main-backend",
+  "networkMode": "awsvpc",
+  "requiresCompatibilities": ["FARGATE"],
+  "cpu": "2048",
+  "memory": "4096",
+  "executionRoleArn": "arn:aws:iam::ACCOUNT_ID:role/ecsTaskExecutionRole",
+  "taskRoleArn": "arn:aws:iam::ACCOUNT_ID:role/afirgen-main-backend-task-role",
+  "containerDefinitions": [
+    {
+      "name": "main-backend",
+      "image": "ACCOUNT_ID.dkr.ecr.REGION.amazonaws.com/afirgen-main-backend:latest",
+      "cpu": 2016,
+      "memory": 3840,
+      "essential": true,
+      "portMappings": [
+        {
+          "containerPort": 8000,
+          "protocol": "tcp"
+        }
+      ],
+      "environment": [
+        {
+          "name": "XRAY_ENABLED",
+          "value": "true"
+        },
+        {
+          "name": "XRAY_SAMPLING_RATE",
+          "value": "0.1"
+        },
+        {
+          "name": "XRAY_DAEMON_ADDRESS",
+          "value": "127.0.0.1:2000"
+        },
+        {
+          "name": "AWS_XRAY_CONTEXT_MISSING",
+          "value": "LOG_ERROR"
+        },
+        {
+          "name": "ENVIRONMENT",
+          "value": "production"
+        },
+        {
+          "name": "LOG_LEVEL",
+          "value": "INFO"
+        }
+      ],
+      "secrets": [
+        {
+          "name": "MYSQL_PASSWORD",
+          "valueFrom": "arn:aws:secretsmanager:REGION:ACCOUNT_ID:secret:afirgen/mysql/credentials:password::"
+        },
+        {
+          "name": "API_KEY",
+          "valueFrom": "arn:aws:secretsmanager:REGION:ACCOUNT_ID:secret:afirgen/api/keys:API_KEY::"
+        },
+        {
+          "name": "FIR_AUTH_KEY",
+          "valueFrom": "arn:aws:secretsmanager:REGION:ACCOUNT_ID:secret:afirgen/api/keys:FIR_AUTH_KEY::"
+        }
+      ],
+      "mountPoints": [
+        {
+          "sourceVolume": "efs-chroma",
+          "containerPath": "/app/chroma_kb",
+          "readOnly": false
+        },
+        {
+          "sourceVolume": "efs-kb",
+          "containerPath": "/app/kb",
+          "readOnly": true
+        }
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/afirgen/main-backend",
+          "awslogs-region": "REGION",
+          "awslogs-stream-prefix": "ecs"
+        }
+      },
+      "healthCheck": {
+        "command": ["CMD-SHELL", "curl -f http://localhost:8000/health || exit 1"],
+        "interval": 30,
+        "timeout": 5,
+        "retries": 3,
+        "startPeriod": 60
+      },
+      "dependsOn": [
+        {
+          "containerName": "xray-daemon",
+          "condition": "START"
+        }
+      ]
+    },
+    {
+      "name": "xray-daemon",
+      "image": "public.ecr.aws/xray/aws-xray-daemon:latest",
+      "cpu": 32,
+      "memory": 256,
+      "essential": true,
+      "portMappings": [
+        {
+          "containerPort": 2000,
+          "protocol": "udp"
+        }
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/afirgen/xray-daemon",
+          "awslogs-region": "REGION",
+          "awslogs-stream-prefix": "xray"
+        }
+      }
+    }
+  ],
+  "volumes": [
+    {
+      "name": "efs-chroma",
+      "efsVolumeConfiguration": {
+        "fileSystemId": "fs-XXXXXXXXX",
+        "transitEncryption": "ENABLED",
+        "authorizationConfig": {
+          "accessPointId": "fsap-XXXXXXXXX",
+          "iam": "ENABLED"
+        }
+      }
+    },
+    {
+      "name": "efs-kb",
+      "efsVolumeConfiguration": {
+        "fileSystemId": "fs-XXXXXXXXX",
+        "transitEncryption": "ENABLED",
+        "authorizationConfig": {
+          "accessPointId": "fsap-XXXXXXXXX",
+          "iam": "ENABLED"
+        }
+      }
+    }
+  ]
+}

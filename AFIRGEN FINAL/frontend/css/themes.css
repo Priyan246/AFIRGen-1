@@ -1,0 +1,137 @@
+/**
+ * Themes CSS - Theme-specific styles (dark mode, light mode, etc.)
+ * Currently implements dark theme as default
+ * Future: Add light mode and other theme variations
+ */
+
+/* Dark theme (default) - CSS custom properties for easy theming */
+:root {
+    /* Background colors */
+    --bg-primary: #000000;
+    --bg-secondary: rgba(32, 32, 32, 0.3);
+    --bg-tertiary: rgba(48, 48, 48, 0.4);
+    --bg-hover: rgba(43, 43, 43, 0.6);
+    
+    /* Text colors */
+    --text-primary: #ffffff;
+    --text-secondary: rgba(209, 213, 219, 1);
+    --text-tertiary: rgb(125, 125, 125);
+    --text-muted: rgb(128, 128, 128);
+    
+    /* Border colors */
+    --border-primary: rgba(75, 75, 75, 1);
+    --border-secondary: rgba(68, 68, 68, 0.5);
+    --border-hover: rgb(100, 100, 100);
+    
+    /* Accent colors */
+    --accent-success: #34d399;
+    --accent-error: #f87171;
+    --accent-warning: #fbbf24;
+    --accent-info: #60a5fa;
+    
+    /* Status colors */
+    --status-pending-bg: rgba(117, 117, 117, 0.2);
+    --status-pending-text: rgb(149, 149, 149);
+    --status-pending-border: rgba(159, 159, 159, 0.3);
+    
+    --status-investigating-bg: rgb(213, 213, 213);
+    --status-investigating-text: rgb(0, 0, 0);
+    --status-investigating-border: rgba(255, 255, 255, 0.3);
+    
+    --status-closed-bg: rgb(0, 0, 0);
+    --status-closed-text: rgb(201, 201, 201);
+    --status-closed-border: rgb(185, 185, 185);
+    
+    /* Modal colors */
+    --modal-bg: rgb(36, 36, 36);
+    --modal-border: rgb(71, 71, 71);
+    --modal-overlay: rgba(0, 0, 0, 0.5);
+}
+
+/* Light theme (future implementation) */
+/* 
+body.light-mode {
+    --bg-primary: #ffffff;
+    --bg-secondary: rgba(243, 244, 246, 1);
+    --bg-tertiary: rgba(229, 231, 235, 1);
+    --bg-hover: rgba(209, 213, 219, 1);
+    
+    --text-primary: #000000;
+    --text-secondary: rgba(55, 65, 81, 1);
+    --text-tertiary: rgb(107, 114, 128);
+    --text-muted: rgb(156, 163, 175);
+    
+    --border-primary: rgba(209, 213, 219, 1);
+    --border-secondary: rgba(229, 231, 235, 1);
+    --border-hover: rgb(156, 163, 175);
+    
+    --modal-bg: rgb(255, 255, 255);
+    --modal-border: rgb(229, 231, 235);
+    --modal-overlay: rgba(0, 0, 0, 0.3);
+}
+*/
+
+/* High contrast theme (future implementation for accessibility) */
+/*
+body.high-contrast {
+    --bg-primary: #000000;
+    --bg-secondary: #1a1a1a;
+    --bg-tertiary: #2a2a2a;
+    --bg-hover: #3a3a3a;
+    
+    --text-primary: #ffffff;
+    --text-secondary: #ffffff;
+    --text-tertiary: #e0e0e0;
+    --text-muted: #c0c0c0;
+    
+    --border-primary: #ffffff;
+    --border-secondary: #e0e0e0;
+    --border-hover: #ffffff;
+}
+*/
+
+/* Theme transition for smooth switching */
+body {
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Apply theme variables to elements */
+body {
+    background: var(--bg-primary);
+    color: var(--text-primary);
+}
+
+.navbar {
+    background: rgba(0, 0, 0, 0.5);
+    border-bottom: 1px solid var(--border-primary);
+}
+
+.sidebar {
+    background: var(--bg-secondary);
+    border-right: 1px solid var(--border-primary);
+}
+
+.fir-item {
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-secondary);
+}
+
+.fir-item:hover {
+    background: var(--bg-hover);
+}
+
+.modal-content {
+    background: var(--modal-bg);
+    border: 1px solid var(--modal-border);
+}
+
+.modal-overlay {
+    background: var(--modal-overlay);
+}
+
+/* Theme-specific animations */
+@media (prefers-reduced-motion: reduce) {
+    body {
+        transition: none;
+    }
+}

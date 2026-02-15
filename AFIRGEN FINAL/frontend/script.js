@@ -306,8 +306,18 @@ Generated on: ${now.toISOString()}`;
         });
         // Existing code up to DOM elements... (keep your updateTime, file handlers, etc.)
 
-// API Base URL (file 1's endpoint)
-const API_BASE = 'http://localhost:8000';  // Change for production
+// API Base URL - configurable via environment or defaults to localhost
+const API_BASE = window.ENV?.API_BASE_URL || 'http://localhost:8000';
+const API_KEY = window.ENV?.API_KEY || '';
+
+// Helper function to create headers with API key
+function getAuthHeaders(additionalHeaders = {}) {
+    const headers = {
+        'X-API-Key': API_KEY,
+        ...additionalHeaders
+    };
+    return headers;
+}
 
 // State variables
 let sessionId = null;
@@ -339,6 +349,7 @@ generateBtn.addEventListener('click', async () => {
 
         const response = await fetch(`${API_BASE}/process`, {
             method: 'POST',
+            headers: getAuthHeaders(),
             body: formData
         });
 
@@ -417,7 +428,7 @@ async function handleValidation(approved, userInput) {
     try {
         const response = await fetch(`${API_BASE}/validate`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: getAuthHeaders({ 'Content-Type': 'application/json' }),
             body: JSON.stringify({ session_id: sessionId, approved, user_input: userInput })
         });
 
@@ -450,7 +461,7 @@ async function handleRegenerate(userInput) {
     try {
         const response = await fetch(`${API_BASE}/regenerate/${sessionId}`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: getAuthHeaders({ 'Content-Type': 'application/json' }),
             body: JSON.stringify({ step: currentStep, user_input: userInput })
         });
 
@@ -476,11 +487,15 @@ function pollSessionStatus() {
         }
 
         try {
-            const response = await fetch(`${API_BASE}/session/${sessionId}/status`);
+            const response = await fetch(`${API_BASE}/session/${sessionId}/status`, {
+                headers: getAuthHeaders()
+            });
             const status = await response.json();
 
             if (status.status === 'completed') {
-                const firResponse = await fetch(`${API_BASE}/fir/${status.validation_history?.at(-1)?.content?.fir_number || ''}`);
+                const firResponse = await fetch(`${API_BASE}/fir/${status.validation_history?.at(-1)?.content?.fir_number || ''}`, {
+                    headers: getAuthHeaders()
+                });
                 const firData = await firResponse.json();
                 showResult({ success: true, fir_content: firData.content });
                 updateFIRList();

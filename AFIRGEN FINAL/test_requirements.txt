@@ -1,0 +1,11 @@
+# Testing Requirements for AFIRGen
+# Install with: pip install -r test_requirements.txt
+
+httpx>=0.24.0
+pytest>=7.4.0
+pytest-asyncio>=0.21.0
+
+# AWS Security Groups Validation
+boto3>=1.28.0
+colorama>=0.4.6
+tabulate>=0.9.0

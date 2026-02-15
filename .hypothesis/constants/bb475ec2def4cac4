@@ -1,0 +1,4 @@
+# file: C:\Users\knith\OneDrive\Desktop\AFIRGen-1\AFIRGEN FINAL\model_loader.py
+# hypothesis_version: 6.151.6
+
+[0.0, 0.5, 8192, ' (REQUIRED)', ' (optional)', ', ', '; ', '=', 'Loader returned None', 'No models loaded', 'Unknown error', 'Validation passed', 'checksum', 'degraded', 'error', 'errors', 'failed', 'healthy', 'loaded', 'loaded_count', 'loading', 'message', 'models_loaded', 'name', 'not_loaded', 'path', 'rb', 'required', 'sha256', 'status', 'total_count', 'unhealthy', '✅ LOADED', '❌ FAILED']

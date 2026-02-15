@@ -1,0 +1,5 @@
+# This directory will contain static assets
+# Subdirectories:
+# - icons/ (PWA icons, favicons)
+# - fonts/ (local fonts if needed)
+# - images/ (application images)

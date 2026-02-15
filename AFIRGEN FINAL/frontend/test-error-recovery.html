@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Error Recovery Test</title>
+    <link rel="stylesheet" href="css/main.css">
+    <style>
+        body {
+            padding: 2rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .test-section {
+            margin: 2rem 0;
+            padding: 1.5rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+        .test-section h2 {
+            margin-top: 0;
+        }
+        .test-buttons {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        .test-button {
+            padding: 0.75rem 1.5rem;
+            background: #000;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.95rem;
+        }
+        .test-button:hover {
+            background: #333;
+        }
+        .test-button.danger {
+            background: #dc3545;
+        }
+        .test-button.danger:hover {
+            background: #c82333;
+        }
+        .test-results {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 0.85rem;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>Error Recovery Mechanisms Test</h1>
+    <p>This page tests the error recovery mechanisms: automatic retry, reload button, and error logging.</p>
+
+    <!-- Toast Container -->
+    <div id="toast-container" role="region" aria-live="polite" aria-label="Notifications"></div>
+
+    <!-- Test Section 1: Automatic Retry -->
+    <div class="test-section">
+        <h2>1. Automatic Retry with Exponential Backoff</h2>
+        <p>Tests that network errors trigger automatic retry with exponential backoff (1s, 2s, 4s).</p>
+        <div class="test-buttons">
+            <button class="test-button" onclick="testRetrySuccess()">Test Retry Success (2nd attempt)</button>
+            <button class="test-button" onclick="testRetryFailure()">Test Retry Failure (all attempts)</button>
+            <button class="test-button" onclick="testNo4xxRetry()">Test No Retry on 4xx</button>
+            <button class="test-button" onclick="testRetry429()">Test Retry on 429</button>
+        </div>
+        <div id="retry-results" class="test-results"></div>
+    </div>
+
+    <!-- Test Section 2: Critical Error with Reload Button -->
+    <div class="test-section">
+        <h2>2. Critical Error with Reload Button</h2>
+        <p>Tests that critical errors show a reload button instead of auto-dismissing.</p>
+        <div class="test-buttons">
+            <button class="test-button danger" onclick="testCriticalNetworkError()">Test Critical Network Error</button>
+            <button class="test-button danger" onclick="testCritical401Error()">Test 401 Unauthorized</button>
+            <button class="test-button danger" onclick="testCritical500Error()">Test 500 Server Error</button>
+        </div>
+        <div id="critical-results" class="test-results"></div>
+    </div>
+
+    <!-- Test Section 3: Non-Critical Errors -->
+    <div class="test-section">
+        <h2>3. Non-Critical Errors (No Reload Button)</h2>
+        <p>Tests that non-critical errors show regular toast without reload button.</p>
+        <div class="test-buttons">
+            <button class="test-button" onclick="testTimeoutError()">Test Timeout Error</button>
+            <button class="test-button" onclick="test400Error()">Test 400 Bad Request</button>
+            <button class="test-button" onclick="test404Error()">Test 404 Not Found</button>
+        </div>
+        <div id="noncritical-results" class="test-results"></div>
+    </div>
+
+    <!-- Test Section 4: Error Logging -->
+    <div class="test-section">
+        <h2>4. Error Logging to Console</h2>
+        <p>Open browser console (F12) to see detailed error logs with timestamps, operation context, and stack traces.</p>
+        <div class="test-buttons">
+            <button class="test-button" onclick="testErrorLogging()">Test Error Logging</button>
+            <button class="test-button" onclick="clearConsole()">Clear Console</button>
+        </div>
+        <div id="logging-results" class="test-results"></div>
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        // Mock environment
+        window.ENV = {
+            API_BASE_URL: 'http://localhost:8000',
+            API_KEY: 'test-key'
+        };
+    </script>
+    <script src="js/ui.js"></script>
+    <script src="js/validation.js"></script>
+    <script src="js/api.js"></script>
+
+    <script>
+        // Helper to log results
+        function logResult(elementId, message) {
+            const element = document.getElementById(elementId);
+            const timestamp = new Date().toLocaleTimeString();
+            element.innerHTML += `[${timestamp}] ${message}<br>`;
+            element.scrollTop = element.scrollHeight;
+        }
+
+        // Test 1: Retry Success
+        async function testRetrySuccess() {
+            logResult('retry-results', 'Testing retry with success on 2nd attempt...');
+            let attemptCount = 0;
+            
+            const mockFn = async () => {
+                attemptCount++;
+                if (attemptCount === 1) {
+                    throw new Error('Network error');
+                }
+                return { success: true, data: 'Success!' };
+            };
+
+            try {
+                const result = await window.API.retryWithBackoff(mockFn, 3, 500);
+                logResult('retry-results', `✓ Success after ${attemptCount} attempts: ${JSON.stringify(result)}`);
+            } catch (error) {
+                logResult('retry-results', `✗ Failed: ${error.message}`);
+            }
+        }
+
+        // Test 2: Retry Failure
+        async function testRetryFailure() {
+            logResult('retry-results', 'Testing retry with failure on all attempts...');
+            let attemptCount = 0;
+            
+            const mockFn = async () => {
+                attemptCount++;
+                throw new Error('Persistent network error');
+            };
+
+            try {
+                await window.API.retryWithBackoff(mockFn, 3, 500);
+                logResult('retry-results', '✗ Should have failed');
+            } catch (error) {
+                logResult('retry-results', `✓ Failed after ${attemptCount} attempts as expected`);
+            }
+        }
+
+        // Test 3: No Retry on 4xx
+        async function testNo4xxRetry() {
+            logResult('retry-results', 'Testing no retry on 4xx errors...');
+            let attemptCount = 0;
+            
+            const mockFn = async () => {
+                attemptCount++;
+                const error = new Error('Bad request');
+                error.status = 400;
+                throw error;
+            };
+
+            try {
+                await window.API.retryWithBackoff(mockFn, 3, 500);
+                logResult('retry-results', '✗ Should have failed');
+            } catch (error) {
+                logResult('retry-results', `✓ Failed immediately after ${attemptCount} attempt (no retry)`);
+            }
+        }
+
+        // Test 4: Retry on 429
+        async function testRetry429() {
+            logResult('retry-results', 'Testing retry on 429 rate limit...');
+            let attemptCount = 0;
+            
+            const mockFn = async () => {
+                attemptCount++;
+                if (attemptCount === 1) {
+                    const error = new Error('Rate limit exceeded');
+                    error.status = 429;
+                    throw error;
+                }
+                return { success: true };
+            };
+
+            try {
+                await window.API.retryWithBackoff(mockFn, 3, 500);
+                logResult('retry-results', `✓ Success after ${attemptCount} attempts (retried 429)`);
+            } catch (error) {
+                logResult('retry-results', `✗ Failed: ${error.message}`);
+            }
+        }
+
+        // Test 5: Critical Network Error
+        function testCriticalNetworkError() {
+            logResult('critical-results', 'Triggering critical network error...');
+            const error = new Error('Failed to fetch');
+            const result = window.API.handleNetworkError(error, 'test operation');
+            logResult('critical-results', `✓ Critical error detected: ${result.isCritical}`);
+            logResult('critical-results', 'Check toast for reload button');
+        }
+
+        // Test 6: Critical 401 Error
+        async function testCritical401Error() {
+            logResult('critical-results', 'Triggering 401 unauthorized error...');
+            const mockResponse = {
+                status: 401,
+                statusText: 'Unauthorized',
+                headers: { get: () => 'application/json' },
+                json: async () => ({ error: 'Invalid credentials' }),
+                url: 'http://localhost:8000/api/test'
+            };
+            const result = await window.API.handleAPIError(mockResponse, 'test operation');
+            logResult('critical-results', `✓ Critical error detected: ${result.isCritical}`);
+            logResult('critical-results', 'Check toast for reload button');
+        }
+
+        // Test 7: Critical 500 Error
+        async function testCritical500Error() {
+            logResult('critical-results', 'Triggering 500 server error...');
+            const mockResponse = {
+                status: 500,
+                statusText: 'Internal Server Error',
+                headers: { get: () => 'application/json' },
+                json: async () => ({ error: 'Database connection failed' }),
+                url: 'http://localhost:8000/api/test'
+            };
+            const result = await window.API.handleAPIError(mockResponse, 'test operation');
+            logResult('critical-results', `✓ Critical error detected: ${result.isCritical}`);
+            logResult('critical-results', 'Check toast for reload button');
+        }
+
+        // Test 8: Timeout Error (Non-Critical)
+        function testTimeoutError() {
+            logResult('noncritical-results', 'Triggering timeout error...');
+            const error = new Error('Request timeout');
+            const result = window.API.handleNetworkError(error, 'test operation');
+            logResult('noncritical-results', `✓ Non-critical error: ${!result.isCritical}`);
+            logResult('noncritical-results', 'Check toast (no reload button)');
+        }
+
+        // Test 9: 400 Error (Non-Critical)
+        async function test400Error() {
+            logResult('noncritical-results', 'Triggering 400 bad request...');
+            const mockResponse = {
+                status: 400,
+                statusText: 'Bad Request',
+                headers: { get: () => 'application/json' },
+                json: async () => ({ error: 'Invalid input' }),
+                url: 'http://localhost:8000/api/test'
+            };
+            const result = await window.API.handleAPIError(mockResponse, 'test operation');
+            logResult('noncritical-results', `✓ Non-critical error: ${!result.isCritical}`);
+            logResult('noncritical-results', 'Check toast (no reload button)');
+        }
+
+        // Test 10: 404 Error (Non-Critical)
+        async function test404Error() {
+            logResult('noncritical-results', 'Triggering 404 not found...');
+            const mockResponse = {
+                status: 404,
+                statusText: 'Not Found',
+                headers: { get: () => 'application/json' },
+                json: async () => ({ error: 'Resource not found' }),
+                url: 'http://localhost:8000/api/test'
+            };
+            const result = await window.API.handleAPIError(mockResponse, 'test operation');
+            logResult('noncritical-results', `✓ Non-critical error: ${!result.isCritical}`);
+            logResult('noncritical-results', 'Check toast (no reload button)');
+        }
+
+        // Test 11: Error Logging
+        async function testErrorLogging() {
+            logResult('logging-results', 'Triggering various errors to test logging...');
+            
+            // Network error
+            const networkError = new Error('Network failure');
+            networkError.stack = 'Error: Network failure\n    at testErrorLogging';
+            window.API.handleNetworkError(networkError, 'logging test');
+            logResult('logging-results', '✓ Network error logged to console');
+            
+            // API error
+            const mockResponse = {
+                status: 500,
+                statusText: 'Internal Server Error',
+                headers: { get: () => 'application/json' },
+                json: async () => ({ error: 'Database error' }),
+                url: 'http://localhost:8000/api/test'
+            };
+            await window.API.handleAPIError(mockResponse, 'logging test');
+            logResult('logging-results', '✓ API error logged to console');
+            
+            logResult('logging-results', 'Open browser console (F12) to see detailed logs');
+        }
+
+        // Clear console
+        function clearConsole() {
+            console.clear();
+            logResult('logging-results', '✓ Console cleared');
+        }
+
+        // Initial message
+        console.log('%c Error Recovery Test Page Loaded', 'color: green; font-weight: bold; font-size: 14px;');
+        console.log('This page tests error recovery mechanisms. Use the buttons to trigger different error scenarios.');
+    </script>
+</body>
+</html>

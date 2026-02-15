@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loading Functions Test</title>
+    <link rel="stylesheet" href="css/main.css">
+    <style>
+        body {
+            padding: 2rem;
+        }
+        .test-container {
+            margin: 2rem 0;
+            padding: 2rem;
+            background: rgba(48, 48, 48, 0.4);
+            border: 1px solid rgba(68, 68, 68, 0.5);
+            border-radius: 0.5rem;
+            min-height: 200px;
+            position: relative;
+        }
+        .test-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: white;
+        }
+        .test-content {
+            color: rgba(209, 213, 219, 1);
+            margin-bottom: 1rem;
+        }
+        .test-buttons {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        button {
+            padding: 0.5rem 1rem;
+            background: white;
+            color: black;
+            border: none;
+            border-radius: 0.25rem;
+            cursor: pointer;
+            font-size: 0.875rem;
+        }
+        button:hover {
+            background: rgba(243, 244, 246, 1);
+        }
+    </style>
+</head>
+<body>
+    <h1 style="color: white; margin-bottom: 2rem;">Loading Functions Test</h1>
+
+    <!-- Test 1: Basic Loading -->
+    <div class="test-container" id="test1">
+        <div class="test-title">Test 1: Basic Loading Spinner</div>
+        <div class="test-content">Click the button to show a loading spinner for 3 seconds.</div>
+        <div class="test-buttons">
+            <button onclick="testBasicLoading()">Show Loading</button>
+        </div>
+    </div>
+
+    <!-- Test 2: Loading with Custom Message -->
+    <div class="test-container" id="test2">
+        <div class="test-title">Test 2: Loading with Custom Message</div>
+        <div class="test-content">Click the button to show a loading spinner with a custom message.</div>
+        <div class="test-buttons">
+            <button onclick="testCustomMessage()">Show Custom Loading</button>
+        </div>
+    </div>
+
+    <!-- Test 3: Progress Bar -->
+    <div class="test-container" id="test3">
+        <div class="test-title">Test 3: Progress Bar</div>
+        <div class="test-content">Click the button to show a progress bar that fills from 0% to 100%.</div>
+        <div class="test-buttons">
+            <button onclick="testProgressBar()">Show Progress</button>
+        </div>
+    </div>
+
+    <!-- Test 4: Multiple Loading States -->
+    <div class="test-container" id="test4">
+        <div class="test-title">Test 4: Multiple Loading States</div>
+        <div class="test-content">Test showing and hiding multiple loading states independently.</div>
+        <div class="test-buttons">
+            <button onclick="testMultipleLoading()">Test Multiple</button>
+        </div>
+    </div>
+
+    <script src="js/ui.js"></script>
+    <script>
+        // Test 1: Basic loading
+        function testBasicLoading() {
+            const container = document.getElementById('test1');
+            const loadingId = showLoading(container);
+            console.log('Loading started:', loadingId);
+            
+            setTimeout(() => {
+                hideLoading(loadingId);
+                console.log('Loading stopped');
+            }, 3000);
+        }
+
+        // Test 2: Custom message
+        function testCustomMessage() {
+            const container = document.getElementById('test2');
+            const loadingId = showLoading(container, 'Processing your request...');
+            
+            setTimeout(() => {
+                hideLoading(loadingId);
+            }, 3000);
+        }
+
+        // Test 3: Progress bar
+        function testProgressBar() {
+            const container = document.getElementById('test3');
+            let progress = 0;
+            
+            const interval = setInterval(() => {
+                progress += 10;
+                showProgress(container, progress, `Uploading file... ${progress}%`);
+                
+                if (progress >= 100) {
+                    clearInterval(interval);
+                }
+            }, 300);
+        }
+
+        // Test 4: Multiple loading states
+        function testMultipleLoading() {
+            const container = document.getElementById('test4');
+            
+            // Show first loading
+            const loading1 = showLoading(container, 'First operation...');
+            console.log('First loading:', loading1);
+            
+            // After 1 second, show second loading
+            setTimeout(() => {
+                hideLoading(loading1);
+                const loading2 = showLoading(container, 'Second operation...');
+                console.log('Second loading:', loading2);
+                
+                // After another 2 seconds, hide second loading
+                setTimeout(() => {
+                    hideLoading(loading2);
+                }, 2000);
+            }, 1000);
+        }
+
+        // Test timing for requirement 5.2.1 (<100ms)
+        function measureLoadingTiming() {
+            const container = document.getElementById('test1');
+            const startTime = performance.now();
+            
+            showLoading(container);
+            
+            // Use requestAnimationFrame to measure when the loading indicator is actually visible
+            requestAnimationFrame(() => {
+                const endTime = performance.now();
+                const duration = endTime - startTime;
+                console.log(`Loading indicator displayed in ${duration.toFixed(2)}ms`);
+                
+                if (duration < 100) {
+                    console.log('✓ Meets requirement 5.2.1 (<100ms)');
+                } else {
+                    console.warn('✗ Does not meet requirement 5.2.1 (<100ms)');
+                }
+                
+                hideLoading(container);
+            });
+        }
+
+        // Run timing test on load
+        console.log('Running timing test...');
+        setTimeout(measureLoadingTiming, 1000);
+    </script>
+</body>
+</html>

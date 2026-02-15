@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loading States Test - AFIRGen</title>
+    <link rel="stylesheet" href="css/main.css">
+    <style>
+        body {
+            padding: 2rem;
+        }
+        .test-section {
+            margin-bottom: 3rem;
+            padding: 2rem;
+            background: rgba(32,32,32,0.3);
+            border: 1px solid rgba(75,75,75);
+            border-radius: 0.5rem;
+        }
+        .test-section h2 {
+            margin-bottom: 1rem;
+            color: white;
+        }
+        .test-section p {
+            margin-bottom: 1rem;
+            color: rgba(209, 213, 219, 1);
+        }
+        .test-container {
+            position: relative;
+            min-height: 200px;
+            background: rgba(48, 48, 48, 0.4);
+            border: 1px solid rgba(68, 68, 68, 0.5);
+            border-radius: 0.5rem;
+            padding: 2rem;
+            margin-bottom: 1rem;
+        }
+        .test-buttons {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        button {
+            padding: 0.75rem 1.5rem;
+            background: white;
+            color: black;
+            border: none;
+            border-radius: 0.25rem;
+            cursor: pointer;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: background-color 0.2s;
+        }
+        button:hover {
+            background: rgba(243, 244, 246, 1);
+        }
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .status {
+            margin-top: 1rem;
+            padding: 0.75rem;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 0.25rem;
+            color: rgba(209, 213, 219, 1);
+            font-size: 0.875rem;
+        }
+    </style>
+</head>
+<body>
+    <h1 style="color: white; margin-bottom: 2rem;">Loading States Test</h1>
+
+    <!-- Test 1: Basic Loading Spinner -->
+    <div class="test-section">
+        <h2>Test 1: Basic Loading Spinner</h2>
+        <p>Click the button to show a loading spinner for 3 seconds.</p>
+        <div id="test1-container" class="test-container">
+            <p style="color: white;">Content area - loading will overlay this</p>
+        </div>
+        <div class="test-buttons">
+            <button onclick="testBasicLoading()">Show Loading</button>
+        </div>
+        <div id="test1-status" class="status">Status: Ready</div>
+    </div>
+
+    <!-- Test 2: Progress Bar -->
+    <div class="test-section">
+        <h2>Test 2: Progress Bar</h2>
+        <p>Click the button to simulate a file upload with progress tracking.</p>
+        <div id="test2-container" class="test-container">
+            <p style="color: white;">Upload area - progress bar will appear here</p>
+        </div>
+        <div class="test-buttons">
+            <button onclick="testProgressBar()">Simulate Upload</button>
+        </div>
+        <div id="test2-status" class="status">Status: Ready</div>
+    </div>
+
+    <!-- Test 3: Multiple Loading States -->
+    <div class="test-section">
+        <h2>Test 3: Multiple Loading States</h2>
+        <p>Click the button to show multiple loading states simultaneously.</p>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+            <div id="test3-container1" class="test-container">
+                <p style="color: white;">Container 1</p>
+            </div>
+            <div id="test3-container2" class="test-container">
+                <p style="color: white;">Container 2</p>
+            </div>
+        </div>
+        <div class="test-buttons">
+            <button onclick="testMultipleLoading()">Show Multiple</button>
+        </div>
+        <div id="test3-status" class="status">Status: Ready</div>
+    </div>
+
+    <!-- Test 4: API Call Simulation -->
+    <div class="test-section">
+        <h2>Test 4: API Call Simulation</h2>
+        <p>Simulates the FIR generation workflow with loading states.</p>
+        <div id="test4-container" class="test-container">
+            <p style="color: white;">API Response will appear here</p>
+            <div id="test4-result"></div>
+        </div>
+        <div class="test-buttons">
+            <button onclick="testAPICall()">Simulate API Call</button>
+        </div>
+        <div id="test4-status" class="status">Status: Ready</div>
+    </div>
+
+    <!-- Test 5: Rapid Show/Hide -->
+    <div class="test-section">
+        <h2>Test 5: Rapid Show/Hide</h2>
+        <p>Tests rapid loading state changes.</p>
+        <div id="test5-container" class="test-container">
+            <p style="color: white;">Rapid loading test area</p>
+        </div>
+        <div class="test-buttons">
+            <button onclick="testRapidLoading()">Rapid Test</button>
+        </div>
+        <div id="test5-status" class="status">Status: Ready</div>
+    </div>
+
+    <script src="js/ui.js"></script>
+    <script>
+        // Test 1: Basic Loading Spinner
+        function testBasicLoading() {
+            const container = document.getElementById('test1-container');
+            const status = document.getElementById('test1-status');
+            
+            status.textContent = 'Status: Loading...';
+            const loadingId = window.showLoading(container, 'Processing request...');
+            
+            setTimeout(() => {
+                window.hideLoading(loadingId);
+                status.textContent = 'Status: Complete!';
+            }, 3000);
+        }
+
+        // Test 2: Progress Bar
+        function testProgressBar() {
+            const container = document.getElementById('test2-container');
+            const status = document.getElementById('test2-status');
+            
+            let progress = 0;
+            status.textContent = 'Status: Uploading...';
+            
+            const interval = setInterval(() => {
+                progress += 10;
+                window.showProgress(container, progress, `Uploading file... ${progress}%`);
+                status.textContent = `Status: Uploading... ${progress}%`;
+                
+                if (progress >= 100) {
+                    clearInterval(interval);
+                    setTimeout(() => {
+                        status.textContent = 'Status: Upload complete!';
+                    }, 500);
+                }
+            }, 300);
+        }
+
+        // Test 3: Multiple Loading States
+        function testMultipleLoading() {
+            const container1 = document.getElementById('test3-container1');
+            const container2 = document.getElementById('test3-container2');
+            const status = document.getElementById('test3-status');
+            
+            status.textContent = 'Status: Loading both containers...';
+            
+            const loadingId1 = window.showLoading(container1, 'Loading data 1...');
+            const loadingId2 = window.showLoading(container2, 'Loading data 2...');
+            
+            setTimeout(() => {
+                window.hideLoading(loadingId1);
+                status.textContent = 'Status: Container 1 complete, container 2 still loading...';
+            }, 2000);
+            
+            setTimeout(() => {
+                window.hideLoading(loadingId2);
+                status.textContent = 'Status: Both complete!';
+            }, 4000);
+        }
+
+        // Test 4: API Call Simulation
+        async function testAPICall() {
+            const container = document.getElementById('test4-container');
+            const status = document.getElementById('test4-status');
+            const result = document.getElementById('test4-result');
+            
+            // Phase 1: Upload
+            status.textContent = 'Status: Uploading files...';
+            let progress = 0;
+            const uploadInterval = setInterval(() => {
+                progress += 20;
+                window.showProgress(container, progress, `Uploading files... ${progress}%`);
+                
+                if (progress >= 100) {
+                    clearInterval(uploadInterval);
+                }
+            }, 200);
+            
+            await new Promise(resolve => setTimeout(resolve, 1200));
+            
+            // Phase 2: Processing
+            status.textContent = 'Status: Processing FIR generation...';
+            const processingId = window.showLoading(container, 'Processing FIR generation...');
+            
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            
+            // Phase 3: Complete
+            window.hideLoading(processingId);
+            status.textContent = 'Status: Complete!';
+            result.innerHTML = '<p style="color: #34d399; font-weight: 500;">✓ FIR generated successfully!</p>';
+            
+            setTimeout(() => {
+                result.innerHTML = '';
+            }, 3000);
+        }
+
+        // Test 5: Rapid Show/Hide
+        function testRapidLoading() {
+            const container = document.getElementById('test5-container');
+            const status = document.getElementById('test5-status');
+            
+            let count = 0;
+            const maxCount = 10;
+            
+            status.textContent = `Status: Rapid test ${count}/${maxCount}`;
+            
+            const interval = setInterval(() => {
+                const loadingId = window.showLoading(container, `Loading ${count + 1}...`);
+                
+                setTimeout(() => {
+                    window.hideLoading(loadingId);
+                    count++;
+                    status.textContent = `Status: Rapid test ${count}/${maxCount}`;
+                    
+                    if (count >= maxCount) {
+                        clearInterval(interval);
+                        status.textContent = 'Status: Rapid test complete!';
+                    }
+                }, 100);
+            }, 200);
+        }
+    </script>
+</body>
+</html>

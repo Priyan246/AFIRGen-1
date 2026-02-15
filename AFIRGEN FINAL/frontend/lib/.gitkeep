@@ -1,0 +1,4 @@
+# This directory will contain third-party libraries
+# Future additions:
+# - dompurify.min.js (for HTML sanitization)
+# - jspdf.min.js (for PDF generation)

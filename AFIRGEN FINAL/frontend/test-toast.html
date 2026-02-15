@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Toast Notification Test</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/main.css">
+    <script src="js/ui.js"></script>
+    <style>
+        body {
+            padding: 2rem;
+        }
+        .test-controls {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .test-section {
+            background: rgba(48, 48, 48, 0.4);
+            border: 1px solid rgba(68, 68, 68, 0.5);
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+        }
+        .test-section h2 {
+            color: white;
+            margin-bottom: 1rem;
+            font-size: 1.25rem;
+        }
+        .button-group {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+        .test-btn {
+            padding: 0.75rem 1.5rem;
+            border: 1px solid rgba(75,75,75);
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+        .test-btn:hover {
+            transform: translateY(-2px);
+        }
+        .btn-success {
+            background: rgba(16, 185, 129, 0.2);
+            color: #34d399;
+            border-color: rgba(52, 211, 153, 0.5);
+        }
+        .btn-error {
+            background: rgba(239, 68, 68, 0.2);
+            color: #f87171;
+            border-color: rgba(248, 113, 113, 0.5);
+        }
+        .btn-warning {
+            background: rgba(245, 158, 11, 0.2);
+            color: #fbbf24;
+            border-color: rgba(251, 191, 36, 0.5);
+        }
+        .btn-info {
+            background: rgba(59, 130, 246, 0.2);
+            color: #60a5fa;
+            border-color: rgba(96, 165, 250, 0.5);
+        }
+        .info-text {
+            color: rgb(173, 173, 173);
+            font-size: 0.875rem;
+            margin-top: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-controls">
+        <h1 style="color: white; text-align: center; margin-bottom: 2rem;">Toast Notification Test</h1>
+        
+        <div class="test-section">
+            <h2>Basic Toast Types</h2>
+            <div class="button-group">
+                <button class="test-btn btn-success" onclick="showToast('Operation completed successfully!', 'success')">
+                    Success Toast
+                </button>
+                <button class="test-btn btn-error" onclick="showToast('An error occurred. Please try again.', 'error')">
+                    Error Toast
+                </button>
+                <button class="test-btn btn-warning" onclick="showToast('Warning: This action cannot be undone.', 'warning')">
+                    Warning Toast
+                </button>
+                <button class="test-btn btn-info" onclick="showToast('Here is some helpful information.', 'info')">
+                    Info Toast
+                </button>
+            </div>
+            <p class="info-text">Default duration: 5 seconds</p>
+        </div>
+
+        <div class="test-section">
+            <h2>Custom Duration</h2>
+            <div class="button-group">
+                <button class="test-btn btn-info" onclick="showToast('This toast will disappear in 2 seconds', 'info', 2000)">
+                    2 Second Toast
+                </button>
+                <button class="test-btn btn-success" onclick="showToast('This toast will disappear in 10 seconds', 'success', 10000)">
+                    10 Second Toast
+                </button>
+                <button class="test-btn btn-warning" onclick="showToast('This toast stays until you close it', 'warning', 0)">
+                    Persistent Toast
+                </button>
+            </div>
+            <p class="info-text">Test different auto-hide durations</p>
+        </div>
+
+        <div class="test-section">
+            <h2>Multiple Toasts</h2>
+            <div class="button-group">
+                <button class="test-btn btn-info" onclick="showMultipleToasts()">
+                    Show 3 Toasts
+                </button>
+                <button class="test-btn btn-success" onclick="showSequentialToasts()">
+                    Show Sequential Toasts
+                </button>
+            </div>
+            <p class="info-text">Test toast stacking behavior</p>
+        </div>
+
+        <div class="test-section">
+            <h2>Long Messages</h2>
+            <div class="button-group">
+                <button class="test-btn btn-error" onclick="showToast('This is a very long error message that demonstrates how the toast component handles text wrapping and maintains readability even with extended content.', 'error')">
+                    Long Error Message
+                </button>
+            </div>
+            <p class="info-text">Test text wrapping and layout</p>
+        </div>
+
+        <div class="test-section">
+            <h2>Manual Control</h2>
+            <div class="button-group">
+                <button class="test-btn btn-info" onclick="testManualControl()">
+                    Show & Hide After 2s
+                </button>
+            </div>
+            <p class="info-text">Test programmatic toast control</p>
+        </div>
+    </div>
+
+    <script>
+        function showMultipleToasts() {
+            showToast('First notification', 'info');
+            setTimeout(() => showToast('Second notification', 'success'), 100);
+            setTimeout(() => showToast('Third notification', 'warning'), 200);
+        }
+
+        function showSequentialToasts() {
+            showToast('Processing started...', 'info', 2000);
+            setTimeout(() => showToast('Processing...', 'info', 2000), 2000);
+            setTimeout(() => showToast('Processing complete!', 'success', 3000), 4000);
+        }
+
+        function testManualControl() {
+            const toastId = showToast('This will be hidden in 2 seconds', 'info', 0);
+            setTimeout(() => hideToast(toastId), 2000);
+        }
+    </script>
+</body>
+</html>

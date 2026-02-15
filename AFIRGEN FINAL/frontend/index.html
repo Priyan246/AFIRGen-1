@@ -3,76 +3,90 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; connect-src 'self' http://localhost:8000 https://*; img-src 'self' data: blob:; frame-ancestors 'none'; base-uri 'self'; form-action 'self';">
     <title>AFIRGen - AI-powered FIR Management</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
-    <script src="script.js" defer></script>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/themes.css">
+    <!-- Security libraries -->
+    <script src="lib/dompurify.min.js"></script>
+    <script src="js/security.js"></script>
+    <!-- Application modules -->
+    <script src="js/config.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/validation.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/keyboard-navigation.js"></script>
+    <script src="js/app.js"></script>
 </head>
 <body>
+    <!-- Skip Link -->
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+    
     <!-- Navbar -->
-    <nav class="navbar">
+    <nav class="navbar" role="navigation" aria-label="Main navigation">
         <div class="navbar-brand">
-            <span class="top-left">AFIRGen</span>
+            <span class="top-left" role="heading" aria-level="1">AFIRGen</span>
         </div>
-        <div class="navbar-nav">
-            <div class="nav-item" data-tab="resources">Resources</div>
-            <div class="nav-item" data-tab="about">About</div>
-            <div class="nav-item active" data-tab="home">Home</div>
+        <div class="navbar-nav" role="menubar">
+            <button class="nav-item" data-tab="resources" role="menuitem" aria-label="Navigate to Resources page" type="button">Resources</button>
+            <button class="nav-item" data-tab="about" role="menuitem" aria-label="Navigate to About page" type="button">About</button>
+            <button class="nav-item active" data-tab="home" role="menuitem" aria-label="Navigate to Home page" aria-current="page" type="button">Home</button>
         </div>
     </nav>
 
     <!-- Main Container -->
     <div class="main-container" id="home-tab">
         <!-- Sidebar -->
-        <div class="sidebar">
-            <div class="location-info">
+        <aside class="sidebar" role="complementary" aria-label="FIR list and location information">
+            <div class="location-info" role="region" aria-label="Current location and time">
                 <div class="location-text">
-                    <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                         <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
                         <circle cx="12" cy="10" r="3"></circle>
                     </svg>
-                    <span>Moggapair West (V7)</span>
+                    <span aria-label="Current location: Moggapair West (V7)">Moggapair West (V7)</span>
                 </div>
                 <div class="time-text">
-                    <svg class="icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <svg class="icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                         <circle cx="12" cy="12" r="10"></circle>
                         <polyline points="12,6 12,12 16,14"></polyline>
                     </svg>
-                    <span id="current-time"></span>
+                    <span id="current-time" aria-label="Current time" aria-live="off"></span>
                 </div>
             </div>
 
-            <div class="fir-list">
-                <div class="fir-item">
+            <div class="fir-list" role="list" aria-label="Recent FIR cases">
+                <div class="fir-item" role="listitem" tabindex="0" aria-label="FIR #2025/001, John Doe - Downtown Market, Status: Investigating">
                     <div class="fir-number">FIR #2025/001</div>
                     <div class="fir-complainant">John Doe - Downtown Market</div>
                     <div class="fir-status status-investigating">Investigating</div>
                 </div>
-                <div class="fir-item">
+                <div class="fir-item" role="listitem" tabindex="0" aria-label="FIR #2025/002, Jane Smith - Parking Dispute, Status: Pending">
                     <div class="fir-number">FIR #2025/002</div>
                     <div class="fir-complainant">Jane Smith - Parking Dispute</div>
                     <div class="fir-status status-pending">Pending</div>
                 </div>
-                <div class="fir-item">
+                <div class="fir-item" role="listitem" tabindex="0" aria-label="FIR #2025/003, Michael Johnson - Fraud Case, Status: Closed">
                     <div class="fir-number">FIR #2025/003</div>
                     <div class="fir-complainant">Michael Johnson - Fraud Case</div>
                     <div class="fir-status status-closed">Closed</div>
                 </div>
-                <div class="fir-item">
+                <div class="fir-item" role="listitem" tabindex="0" aria-label="FIR #2025/004, Sarah Williams - Theft Report, Status: Investigating">
                     <div class="fir-number">FIR #2025/004</div>
                     <div class="fir-complainant">Sarah Williams - Theft Report</div>
                     <div class="fir-status status-investigating">Investigating</div>
                 </div>
-                <div class="fir-item">
+                <div class="fir-item" role="listitem" tabindex="0" aria-label="FIR #2025/005, Robert Brown - Assault Case, Status: Pending">
                     <div class="fir-number">FIR #2025/005</div>
                     <div class="fir-complainant">Robert Brown - Assault Case</div>
                     <div class="fir-status status-pending">Pending</div>
                 </div>
             </div>
-        </div>
+        </aside>
 
         <!-- Main Content -->
-        <div class="main-content">
+        <main class="main-content" id="main-content" role="main">
             <div class="hero-section">
                 <div class="hero-content">
                     <h1 class="hero-title">AFIRGen</h1>
@@ -103,18 +117,19 @@
                     <div class="action-controls">
                         <!-- Search Input -->
                         <div class="search-container">
-                            <input type="text" placeholder="Search FIR" class="search-input" id="search-input">
-                            <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <label for="search-input" class="sr-only">Search FIR</label>
+                            <input type="text" placeholder="Search FIR" class="search-input" id="search-input" aria-label="Search FIR by number or complainant name" role="searchbox">
+                            <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                                 <circle cx="11" cy="11" r="8"></circle>
                                 <path d="m21 21-4.35-4.35"></path>
                             </svg>
                         </div>
 
                         <!-- File Upload -->
-                        <div class="file-upload-container">
-                            <label class="file-upload-item" for="letter-upload">
-                                <input type="file" accept=".pdf,.doc,.docx,.txt,image/*" class="file-upload-input" id="letter-upload">
-                                <svg class="file-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <div class="file-upload-container" role="group" aria-label="File upload controls">
+                            <label class="file-upload-item" for="letter-upload" aria-label="Upload complaint letter or document">
+                                <input type="file" accept=".pdf,.doc,.docx,.txt,image/*" class="file-upload-input" id="letter-upload" aria-describedby="letter-text">
+                                <svg class="file-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                                     <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
                                     <polyline points="14,2 14,8 20,8"></polyline>
                                     <line x1="16" y1="13" x2="8" y2="13"></line>
@@ -124,9 +139,9 @@
                                 <span id="letter-text">Upload Letter</span>
                             </label>
 
-                            <label class="file-upload-item" for="audio-upload">
-                                <input type="file" accept=".mp3,.wav,.m4a,.ogg" class="file-upload-input" id="audio-upload">
-                                <svg class="file-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <label class="file-upload-item" for="audio-upload" aria-label="Upload audio recording of witness statement">
+                                <input type="file" accept=".mp3,.wav,.m4a,.ogg" class="file-upload-input" id="audio-upload" aria-describedby="audio-text">
+                                <svg class="file-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                                     <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
                                     <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
                                     <line x1="12" y1="19" x2="12" y2="23"></line>
@@ -137,63 +152,66 @@
                         </div>
 
                         <!-- Generate Button -->
-                        <button class="generate-btn" id="generate-btn" disabled>
-                            <svg class="generate-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <button class="generate-btn" id="generate-btn" disabled aria-label="Generate FIR from uploaded files" aria-disabled="true" type="button">
+                            <svg class="generate-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                                 <polyline points="9,18 15,12 9,6"></polyline>
                             </svg>
                         </button>
                     </div>
 
                     <!-- Status Messages -->
-                    <div class="status-message status-success hidden" id="status-ready">
+                    <div class="status-message status-success hidden" id="status-ready" role="status" aria-live="polite">
                         <div class="status-content">
-                            <div class="status-dot"></div>
+                            <div class="status-dot" aria-hidden="true"></div>
                             <span>Files uploaded successfully. Ready to generate FIR.</span>
                         </div>
                     </div>
 
-                    <div class="status-message status-processing hidden" id="status-processing">
+                    <div class="status-message status-processing hidden" id="status-processing" role="status" aria-live="polite">
                         <div class="status-content">
-                            <div class="status-dot"></div>
+                            <div class="status-dot" aria-hidden="true"></div>
                             <span>Processing your files and generating FIR...</span>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
+        </main>
     </div>
 
+    <!-- Toast Container -->
+    <div class="toast-container" id="toast-container" aria-live="polite" aria-atomic="true"></div>
+
     <!-- FIR Result Modal -->
-    <div class="modal-overlay hidden" id="modal-overlay">
+    <div class="modal-overlay hidden" id="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-title-text">
         <div class="modal-content">
             <div class="modal-header">
                 <div class="modal-title">
-                    <svg class="icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" id="modal-icon">
+                    <svg class="icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" id="modal-icon" aria-hidden="true">
                         <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
                         <polyline points="22,4 12,14.01 9,11.01"></polyline>
                     </svg>
                     <h2 id="modal-title-text">FIR Generated Successfully</h2>
                 </div>
-                <div class="modal-close" id="modal-close">
-                    <svg class="icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <button class="modal-close" id="modal-close" aria-label="Close modal" type="button">
+                    <svg class="icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                         <line x1="18" y1="6" x2="6" y2="18"></line>
                         <line x1="6" y1="6" x2="18" y2="18"></line>
                     </svg>
-                </div>
+                </button>
             </div>
 
             <div class="modal-body">
                 <div id="success-content">
                     <div class="fir-content-header">
-                        <div class="fir-source-info">
-                            <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <div class="fir-source-info" role="status" aria-label="Source file information">
+                            <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                                 <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
                                 <polyline points="14,2 14,8 20,8"></polyline>
                             </svg>
                             <span id="source-filename">Source: Text Input</span>
                         </div>
-                        <button class="copy-btn" id="copy-btn">
-                            <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <button class="copy-btn" id="copy-btn" aria-label="Copy FIR content to clipboard" type="button">
+                            <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                                 <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
                                 <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
                             </svg>
@@ -201,19 +219,19 @@
                         </button>
                     </div>
                     <div class="fir-content-display">
-                        <pre class="fir-content-text" id="fir-content"></pre>
+                        <pre class="fir-content-text" id="fir-content" role="region" aria-label="Generated FIR content" tabindex="0"></pre>
                     </div>
                 </div>
 
-                <div class="error-content hidden" id="error-content">
+                <div class="error-content hidden" id="error-content" role="alert">
                     <p class="error-text" id="error-text">An unknown error occurred during FIR generation.</p>
                 </div>
 
                 <div class="modal-footer">
-                    <div class="modal-timestamp" id="modal-timestamp"></div>
-                    <div class="modal-actions">
-                        <button class="btn-secondary" id="close-btn">Close</button>
-                        <button class="btn-primary" id="save-btn">Save to Records</button>
+                    <div class="modal-timestamp" id="modal-timestamp" role="status" aria-label="Generation timestamp"></div>
+                    <div class="modal-actions" role="group" aria-label="Modal action buttons">
+                        <button class="btn-secondary" id="close-btn" aria-label="Close modal" type="button">Close</button>
+                        <button class="btn-primary" id="save-btn" aria-label="Save FIR to records" type="button">Save to Records</button>
                     </div>
                 </div>
             </div>
@@ -221,10 +239,10 @@
     </div>
 
     <!-- About Tab -->
-    <div class="tab-content" id="about-tab">
+    <div class="tab-content" id="about-tab" role="region" aria-labelledby="about-heading">
         <div class="page-section">
             <div class="page-header">
-                <h1 class="page-title">About AFIRGen</h1>
+                <h1 class="page-title" id="about-heading">About AFIRGen</h1>
                 <p class="page-subtitle">Revolutionizing FIR management through artificial intelligence and streamlined processes.</p>
             </div>
 
@@ -233,8 +251,8 @@
 
                 <!-- Member 1 -->
                 <div class="team-member">
-                    <div class="member-avatar">
-                        <svg width="3rem" height="3rem" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div class="member-avatar" aria-hidden="true">
+                        <svg width="3rem" height="3rem" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                   d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
                         </svg>
@@ -249,8 +267,8 @@ Lorem ipsum dolor sit amet, consectetur adipisicing elit. Repellat a repudiandae
 
                 <!-- Member 2 -->
                 <div class="team-member">
-                    <div class="member-avatar">
-                        <svg width="3rem" height="3rem" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div class="member-avatar" aria-hidden="true">
+                        <svg width="3rem" height="3rem" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                   d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
                         </svg>
@@ -265,8 +283,8 @@ Lorem ipsum dolor sit amet, consectetur adipisicing elit. Repellat a repudiandae
 
                 <!-- Member 3 -->
                 <div class="team-member">
-                    <div class="member-avatar">
-                        <svg width="3rem" height="3rem" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div class="member-avatar" aria-hidden="true">
+                        <svg width="3rem" height="3rem" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                   d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
                         </svg>
@@ -283,10 +301,10 @@ Lorem ipsum dolor sit amet, consectetur adipisicing elit. Illum deleniti in expl
     </div>
 
     <!-- Resources Tab -->
-    <div class="tab-content" id="resources-tab">
+    <div class="tab-content" id="resources-tab" role="region" aria-labelledby="resources-heading">
         <div class="page-section">
             <div class="page-header">
-                <h1 class="page-title">Resources</h1>
+                <h1 class="page-title" id="resources-heading">Resources</h1>
                 <p class="page-subtitle">
                     Technologies, tools, and resources utilized in the development of AFIRGen.
                 </p>
@@ -296,7 +314,7 @@ Lorem ipsum dolor sit amet, consectetur adipisicing elit. Illum deleniti in expl
                 <!-- Database Used -->
                 <div class="resource-category">
                     <div class="resource-category-title">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                   d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4"></path>
                         </svg>
@@ -304,14 +322,14 @@ Lorem ipsum dolor sit amet, consectetur adipisicing elit. Illum deleniti in expl
                     </div>
                     <div class="resource-list">
                         <div class="resource-item">
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                       d="M5 13l4 4L19 7"></path>
                             </svg>
                             MongoDB - NoSQL database for storing complaint data and FIR records
                         </div>
                         <div class="resource-item">
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                       d="M5 13l4 4L19 7"></path>
                             </svg>
@@ -323,7 +341,7 @@ Lorem ipsum dolor sit amet, consectetur adipisicing elit. Illum deleniti in expl
                 <!-- Tools Used -->
                 <div class="resource-category">
                     <div class="resource-category-title">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                   d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
                         </svg>
@@ -331,28 +349,28 @@ Lorem ipsum dolor sit amet, consectetur adipisicing elit. Illum deleniti in expl
                     </div>
                     <div class="resource-list">
                         <div class="resource-item">
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                       d="M5 13l4 4L19 7"></path>
                             </svg>
                             Python - Core programming language for AI model development
                         </div>
                         <div class="resource-item">
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                       d="M5 13l4 4L19 7"></path>
                             </svg>
                             TensorFlow - Machine learning framework for model training
                         </div>
                         <div class="resource-item">
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                       d="M5 13l4 4L19 7"></path>
                             </svg>
                             React.js - Frontend framework for user interface development
                         </div>
                         <div class="resource-item">
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                       d="M5 13l4 4L19 7"></path>
                             </svg>
@@ -364,7 +382,7 @@ Lorem ipsum dolor sit amet, consectetur adipisicing elit. Illum deleniti in expl
                 <!-- AI Models Finetuned -->
                 <div class="resource-category">
                     <div class="resource-category-title">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                   d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
                         </svg>
@@ -372,28 +390,28 @@ Lorem ipsum dolor sit amet, consectetur adipisicing elit. Illum deleniti in expl
                     </div>
                     <div class="resource-list">
                         <div class="resource-item">
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                       d="M5 13l4 4L19 7"></path>
                             </svg>
                             BERT - Fine-tuned for legal text understanding and entity extraction
                         </div>
                         <div class="resource-item">
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                       d="M5 13l4 4L19 7"></path>
                             </svg>
                             GPT-3.5 - Customized for FIR generation and legal document formatting
                         </div>
                         <div class="resource-item">
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                       d="M5 13l4 4L19 7"></path>
                             </svg>
                             Whisper - Speech-to-text model for audio complaint processing
                         </div>
                         <div class="resource-item">
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                       d="M5 13l4 4L19 7"></path>
                             </svg>

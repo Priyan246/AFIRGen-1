@@ -1,51 +1,256 @@
-version: "3.8"
 services:
   fir_pipeline:
     build:
-      context: ./main_backend
+      context: "./main backend"
       dockerfile: Dockerfile
-    ports:
-      - "8000:8000"
     environment:
         - PORT=8000
-        - MYSQL_HOST=${MYSQL_HOST}
-        - MYSQL_USER=${MYSQL_USER}
-        - MYSQL_PASSWORD=${MYSQL_PASSWORD}
-        - MYSQL_DB=${MYSQL_DB}
-        - FIR_AUTH_KEY=${FIR_AUTH_KEY}
-
+        - MYSQL_HOST=mysql
+        - MYSQL_PORT=3306
+        - MYSQL_USER=${MYSQL_USER:-root}
+        - MYSQL_PASSWORD=${MYSQL_PASSWORD:-password}
+        - MYSQL_DB=${MYSQL_DB:-fir_db}
+        - FIR_AUTH_KEY=${FIR_AUTH_KEY:-default-auth-key}
+        - API_KEY=${API_KEY:-default-api-key}
+        - CORS_ORIGINS=${CORS_ORIGINS:-http://localhost:3000,http://localhost:8000}
+        - RATE_LIMIT_REQUESTS=${RATE_LIMIT_REQUESTS:-100}
+        - RATE_LIMIT_WINDOW=${RATE_LIMIT_WINDOW:-60}
+        - SESSION_TIMEOUT=${SESSION_TIMEOUT:-3600}
+        - ENFORCE_HTTPS=${ENFORCE_HTTPS:-false}
+        - MAX_CONCURRENT_REQUESTS=${MAX_CONCURRENT_REQUESTS:-15}
+        - MAX_CONCURRENT_MODEL_CALLS=${MAX_CONCURRENT_MODEL_CALLS:-10}
+    volumes:
+      - ./general retrieval db:/app/kb:ro  # Knowledge base files (read-only)
+      - chroma_data:/app/chroma_kb  # ChromaDB persistence
+      - sessions_data:/app  # Session database persistence
+      - temp_files:/app/temp_files  # Temporary files
     depends_on:
-      - gguf_model_server
-      - asr_ocr_model_server
+      mysql:
+        condition: service_healthy
+      gguf_model_server:
+        condition: service_healthy
+      asr_ocr_model_server:
+        condition: service_healthy
+    restart: always
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 4G
+        reservations:
+          cpus: '1'
+          memory: 2G
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    stop_grace_period: 30s
+    networks:
+      - afirgen_network
 
   gguf_model_server:
     build:
-      context: ./gguf_model_server
+      context: "./gguf model server"
       dockerfile: Dockerfile
-    ports:
-      - "8001:8001"
     environment:
       - MODEL_SERVER_PORT=8001
+      - MODEL_DIR=/app/models
+      - CORS_ORIGINS=${CORS_ORIGINS:-http://localhost:3000,http://localhost:8000}
+    volumes:
+      - ./models:/app/models:ro  # GGUF model files (read-only)
+    restart: always
+    deploy:
+      resources:
+        limits:
+          cpus: '4'
+          memory: 8G
+        reservations:
+          cpus: '2'
+          memory: 4G
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 180s
+    stop_grace_period: 30s
+    networks:
+      - afirgen_network
 
   asr_ocr_model_server:
     build:
-      context: ./asr_ocr_model_server
+      context: "./asr ocr model server"
       dockerfile: Dockerfile
-    ports:
-      - "8002:8002"
     environment:
       - ASR_OCR_PORT=8002
+      - MODEL_DIR=/app/models
+      - CORS_ORIGINS=${CORS_ORIGINS:-http://localhost:3000,http://localhost:8000}
+    volumes:
+      - ./models:/app/models:ro  # Whisper and dots_ocr models (read-only)
+      - temp_asr_ocr:/app/temp_asr_ocr  # Temporary files for ASR/OCR processing
+    restart: always
+    deploy:
+      resources:
+        limits:
+          cpus: '4'
+          memory: 8G
+        reservations:
+          cpus: '2'
+          memory: 4G
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8002/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 180s
+    stop_grace_period: 30s
+    networks:
+      - afirgen_network
 
   mysql:
     image: mysql:8.0
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: password
-      MYSQL_DATABASE: fir_db
+      MYSQL_ROOT_PASSWORD: ${MYSQL_PASSWORD:-password}
+      MYSQL_DATABASE: ${MYSQL_DB:-fir_db}
+      MYSQL_USER: ${MYSQL_USER:-fir_user}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-password}
+    command: >
+      --innodb-flush-log-at-trx-commit=1
+      --sync-binlog=1
+      --innodb-doublewrite=1
     ports:
       - "3306:3306"
     volumes:
       - mysql_data:/var/lib/mysql
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 2G
+        reservations:
+          cpus: '1'
+          memory: 1G
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_PASSWORD:-password}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    stop_grace_period: 30s
+    networks:
+      - afirgen_network
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        API_BASE_URL: ${API_BASE_URL:-http://localhost:8000}
+        API_KEY: ${API_KEY:-default-api-key}
+        ENVIRONMENT: ${ENVIRONMENT:-development}
+        ENABLE_DEBUG: ${ENABLE_DEBUG:-true}
+    restart: always
+    depends_on:
+      fir_pipeline:
+        condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 512M
+        reservations:
+          cpus: '0.5'
+          memory: 256M
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 10s
+    stop_grace_period: 10s
+    networks:
+      - afirgen_network
+
+  # HTTPS/TLS Reverse Proxy
+  nginx:
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/ssl:/etc/nginx/ssl:ro  # TLS certificates (read-only)
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro  # Nginx config (read-only)
+      - certbot_www:/var/www/certbot  # Let's Encrypt challenge directory
+    restart: always
+    depends_on:
+      fir_pipeline:
+        condition: service_healthy
+      frontend:
+        condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 256M
+        reservations:
+          cpus: '0.25'
+          memory: 128M
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "--no-check-certificate", "https://localhost/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    stop_grace_period: 10s
+    networks:
+      - afirgen_network
+
+  backup:
+    build:
+      context: .
+      dockerfile: Dockerfile.backup
+    environment:
+      - MYSQL_HOST=mysql
+      - MYSQL_PORT=3306
+      - MYSQL_USER=${MYSQL_USER:-root}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD:-password}
+      - MYSQL_DB=${MYSQL_DB:-fir_db}
+      - BACKUP_DIR=/app/backups
+      - BACKUP_RETENTION_DAYS=${BACKUP_RETENTION_DAYS:-7}
+      - SESSION_DB_PATH=/app/sessions.db
+    volumes:
+      - backup_data:/app/backups  # Backup storage
+      - sessions_data:/app:ro  # Read-only access to sessions database
+    depends_on:
+      mysql:
+        condition: service_healthy
+    restart: always
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+        reservations:
+          cpus: '0.25'
+          memory: 256M
+    stop_grace_period: 10s
+    networks:
+      - afirgen_network
 
 volumes:
   mysql_data:
+  chroma_data:  # ChromaDB vector database persistence
+  sessions_data:  # Session database (sessions.db) persistence
+  temp_files:  # Temporary files for main backend
+  temp_asr_ocr:  # Temporary files for ASR/OCR server
+  backup_data:  # Database backups storage
+  certbot_www:  # Let's Encrypt ACME challenge directory
+
+networks:
+  afirgen_network:
+    driver: bridge

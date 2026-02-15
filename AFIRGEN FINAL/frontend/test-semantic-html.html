@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Semantic HTML Test - AFIRGen</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .test-result {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .pass {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .fail {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        h1 {
+            color: #333;
+        }
+        h2 {
+            color: #555;
+            margin-top: 0;
+        }
+        code {
+            background: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <h1>Semantic HTML and Skip Link Test</h1>
+    <p>This page tests the semantic HTML structure and skip link implementation for AFIRGen.</p>
+
+    <div class="test-section">
+        <h2>Test Results</h2>
+        <div id="test-results"></div>
+    </div>
+
+    <script>
+        const results = [];
+
+        function addResult(testName, passed, message) {
+            results.push({ testName, passed, message });
+        }
+
+        // Load the main HTML file
+        fetch('index.html')
+            .then(response => response.text())
+            .then(html => {
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+
+                // Test 1: Skip link exists
+                const skipLink = doc.querySelector('.skip-link');
+                addResult(
+                    'Skip Link Exists',
+                    skipLink !== null,
+                    skipLink ? 'Skip link found with class "skip-link"' : 'Skip link not found'
+                );
+
+                // Test 2: Skip link has correct href
+                const skipLinkHref = skipLink?.getAttribute('href');
+                addResult(
+                    'Skip Link Target',
+                    skipLinkHref === '#main-content',
+                    skipLinkHref === '#main-content' 
+                        ? 'Skip link points to #main-content' 
+                        : `Skip link points to ${skipLinkHref || 'nothing'}`
+                );
+
+                // Test 3: Skip link text is descriptive
+                const skipLinkText = skipLink?.textContent.trim();
+                addResult(
+                    'Skip Link Text',
+                    skipLinkText === 'Skip to main content',
+                    skipLinkText === 'Skip to main content'
+                        ? 'Skip link has descriptive text'
+                        : `Skip link text is "${skipLinkText}"`
+                );
+
+                // Test 4: Main content uses <main> tag
+                const mainElement = doc.querySelector('main');
+                addResult(
+                    'Main Element',
+                    mainElement !== null,
+                    mainElement ? '<main> element found' : '<main> element not found'
+                );
+
+                // Test 5: Main element has id="main-content"
+                const mainId = mainElement?.getAttribute('id');
+                addResult(
+                    'Main Element ID',
+                    mainId === 'main-content',
+                    mainId === 'main-content'
+                        ? '<main> has id="main-content"'
+                        : `<main> has id="${mainId || 'none'}"`
+                );
+
+                // Test 6: Sidebar uses <aside> tag
+                const asideElement = doc.querySelector('aside');
+                addResult(
+                    'Aside Element',
+                    asideElement !== null,
+                    asideElement ? '<aside> element found for sidebar' : '<aside> element not found'
+                );
+
+                // Test 7: Nav uses <nav> tag
+                const navElement = doc.querySelector('nav');
+                addResult(
+                    'Nav Element',
+                    navElement !== null,
+                    navElement ? '<nav> element found' : '<nav> element not found'
+                );
+
+                // Test 8: Nav items use <button> tags
+                const navButtons = doc.querySelectorAll('nav button.nav-item');
+                const navDivs = doc.querySelectorAll('nav div.nav-item');
+                addResult(
+                    'Nav Items Use Buttons',
+                    navButtons.length > 0 && navDivs.length === 0,
+                    navButtons.length > 0 && navDivs.length === 0
+                        ? `Found ${navButtons.length} button nav items, 0 div nav items`
+                        : `Found ${navButtons.length} button nav items, ${navDivs.length} div nav items`
+                );
+
+                // Test 9: All buttons have type attribute
+                const allButtons = doc.querySelectorAll('button');
+                const buttonsWithoutType = Array.from(allButtons).filter(btn => !btn.hasAttribute('type'));
+                addResult(
+                    'Buttons Have Type',
+                    buttonsWithoutType.length === 0,
+                    buttonsWithoutType.length === 0
+                        ? 'All buttons have type attribute'
+                        : `${buttonsWithoutType.length} buttons missing type attribute`
+                );
+
+                // Test 10: Main has role="main"
+                const mainRole = mainElement?.getAttribute('role');
+                addResult(
+                    'Main Role',
+                    mainRole === 'main',
+                    mainRole === 'main'
+                        ? '<main> has role="main"'
+                        : `<main> has role="${mainRole || 'none'}"`
+                );
+
+                // Test 11: Aside has role="complementary"
+                const asideRole = asideElement?.getAttribute('role');
+                addResult(
+                    'Aside Role',
+                    asideRole === 'complementary',
+                    asideRole === 'complementary'
+                        ? '<aside> has role="complementary"'
+                        : `<aside> has role="${asideRole || 'none'}"`
+                );
+
+                // Display results
+                displayResults();
+            })
+            .catch(error => {
+                document.getElementById('test-results').innerHTML = 
+                    `<div class="test-result fail">Error loading index.html: ${error.message}</div>`;
+            });
+
+        function displayResults() {
+            const container = document.getElementById('test-results');
+            const passed = results.filter(r => r.passed).length;
+            const total = results.length;
+
+            let html = `<p><strong>Tests Passed: ${passed}/${total}</strong></p>`;
+            
+            results.forEach(result => {
+                html += `
+                    <div class="test-result ${result.passed ? 'pass' : 'fail'}">
+                        <strong>${result.testName}:</strong> ${result.passed ? '✓ PASS' : '✗ FAIL'}<br>
+                        ${result.message}
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+        }
+    </script>
+</body>
+</html>

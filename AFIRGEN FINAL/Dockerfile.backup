@@ -1,0 +1,34 @@
+# Dockerfile for AFIRGen Database Backup Service
+FROM python:3.11-slim
+
+# Install required packages
+RUN apt-get update && apt-get install -y \
+    cron \
+    default-mysql-client \
+    && rm -rf /var/lib/apt/lists/*
+
+# Create app directory
+WORKDIR /app
+
+# Copy backup scripts
+COPY backup_database.py /app/backup_database.py
+COPY backup_scheduler.sh /app/backup_scheduler.sh
+
+# Make scripts executable
+RUN chmod +x /app/backup_database.py /app/backup_scheduler.sh
+
+# Create backup directory
+RUN mkdir -p /app/backups
+
+# Set environment variables (can be overridden in docker-compose)
+ENV MYSQL_HOST=mysql
+ENV MYSQL_PORT=3306
+ENV MYSQL_USER=root
+ENV MYSQL_PASSWORD=password
+ENV MYSQL_DB=fir_db
+ENV BACKUP_DIR=/app/backups
+ENV BACKUP_RETENTION_DAYS=7
+ENV SESSION_DB_PATH=/app/sessions.db
+
+# Run the scheduler
+CMD ["/app/backup_scheduler.sh"]

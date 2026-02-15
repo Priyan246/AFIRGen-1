@@ -1,0 +1,86 @@
+{
+  "specName": "frontend-optimization",
+  "version": "1.0.0",
+  "createdAt": "2026-02-14",
+  "description": "AFIRGen Frontend Optimization - Performance, UX, Security, Accessibility, and New Features",
+  "status": "in-progress",
+  "priority": "high",
+  "estimatedDays": "21-32",
+  "phases": [
+    {
+      "name": "Phase 1: Core Improvements (P0)",
+      "description": "Loading states, error handling, input sanitization, file validation, basic accessibility",
+      "estimatedDays": "3-5"
+    },
+    {
+      "name": "Phase 2: Performance Optimizations (P1)",
+      "description": "API client with retry/cache, minification, service worker, asset optimization",
+      "estimatedDays": "5-7"
+    },
+    {
+      "name": "Phase 3: New Features (P1)",
+      "description": "FIR history, dark mode, drag-and-drop upload",
+      "estimatedDays": "5-7"
+    },
+    {
+      "name": "Phase 4: Advanced Features (P2)",
+      "description": "PDF export, PWA features, advanced accessibility, real-time validation",
+      "estimatedDays": "3-5"
+    },
+    {
+      "name": "Phase 5: Polish and Testing (P2)",
+      "description": "Animations, print styles, comprehensive tests, documentation",
+      "estimatedDays": "3-5"
+    },
+    {
+      "name": "Phase 6: Deployment",
+      "description": "Docker build, staging deployment, production deployment",
+      "estimatedDays": "2-3"
+    }
+  ],
+  "technologies": [
+    "HTML5",
+    "CSS3",
+    "Vanilla JavaScript",
+    "DOMPurify",
+    "jsPDF",
+    "Service Worker",
+    "IndexedDB",
+    "LocalStorage",
+    "Jest",
+    "fast-check",
+    "Playwright",
+    "ESLint",
+    "Prettier",
+    "Terser",
+    "cssnano"
+  ],
+  "testingFrameworks": {
+    "unit": "Jest",
+    "propertyBased": "fast-check",
+    "e2e": "Playwright",
+    "accessibility": "axe DevTools, Lighthouse"
+  },
+  "targetMetrics": {
+    "performance": {
+      "lighthouseScore": ">90",
+      "pageLoadTime": "<2s on 3G",
+      "fcp": "<1s",
+      "tti": "<3s",
+      "bundleSize": "<500KB gzipped"
+    },
+    "accessibility": {
+      "wcagLevel": "AA",
+      "lighthouseScore": ">90",
+      "keyboardNavigation": "100%"
+    },
+    "codeQuality": {
+      "testCoverage": ">80%",
+      "eslintErrors": "0",
+      "documentation": "Complete"
+    }
+  },
+  "relatedSpecs": [
+    "afirgen-aws-optimization"
+  ]
+}
