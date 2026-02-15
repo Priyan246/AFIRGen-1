@@ -11,12 +11,20 @@
     "lint:fix": "eslint js/**/*.js --fix",
     "format": "prettier --write \"**/*.{js,css,html,json,md}\"",
     "format:check": "prettier --check \"**/*.{js,css,html,json,md}\"",
-    "build": "npm run build:css && npm run build:js && npm run build:html",
+    "build": "npm run build:css && npm run build:js && npm run build:html && npm run build:copy",
     "build:css": "cssnano css/main.css dist/css/main.min.css && cssnano css/themes.css dist/css/themes.min.css",
-    "build:js": "terser js/app.js js/api.js js/validation.js js/security.js js/ui.js js/storage.js js/state.js js/config.js -o dist/js/app.min.js --source-map --compress --mangle",
-    "build:html": "html-minifier --collapse-whitespace --remove-comments --minify-css true --minify-js true -o dist/index.html index.html",
-    "prebuild": "mkdir -p dist/css dist/js dist/lib dist/assets",
-    "dev": "echo 'Use a live server for development (e.g., Live Server extension in VS Code)' && exit 1",
+    "build:js": "terser js/app.js js/api.js js/validation.js js/security.js js/ui.js js/keyboard-navigation.js js/config.js --config-file terser.config.json -o dist/js/app.min.js",
+    "build:html": "html-minifier --config-file .htmlminifierrc.json -o dist/index.html index.html && html-minifier --config-file .htmlminifierrc.json -o dist/offline.html offline.html",
+    "build:copy": "xcopy /E /I /Y lib dist\\lib && if exist assets xcopy /E /I /Y assets dist\\assets && copy /Y sw.js dist\\sw.js",
+    "verify:sizes": "node -e \"const fs=require('fs');const path=require('path');function getSize(dir,ext){let total=0;function walk(d){fs.readdirSync(d).forEach(f=>{const p=path.join(d,f);if(fs.statSync(p).isDirectory())walk(p);else if(p.endsWith(ext))total+=fs.statSync(p).size});};walk(dir);return total;}const css=getSize('dist/css','.css');const js=getSize('dist/js','.js');const lib=getSize('dist/lib','.js');const html=getSize('dist','.html');const total=css+js+lib+html;console.log('CSS:',(css/1024).toFixed(2),'KB');console.log('App JS:',(js/1024).toFixed(2),'KB');console.log('Lib JS:',(lib/1024).toFixed(2),'KB');console.log('HTML:',(html/1024).toFixed(2),'KB');console.log('Total:',(total/1024).toFixed(2),'KB');console.log('Est. gzipped:',(total*0.3/1024).toFixed(2),'KB');\"",
+    "test:performance": "node scripts/performance-test.js",
+    "test:bundle-size": "node scripts/check-bundle-sizes.js",
+    "test:lighthouse": "lighthouse http://localhost:3000 --output html --output-path ./lighthouse-report.html --view",
+    "test:lighthouse-ci": "lhci autorun",
+    "validate:phase2": "node scripts/validate-phase2.js",
+    "prebuild": "if not exist dist mkdir dist && if not exist dist\\css mkdir dist\\css && if not exist dist\\js mkdir dist\\js && if not exist dist\\lib mkdir dist\\lib && if not exist dist\\assets mkdir dist\\assets",
+    "dev": "http-server -p 3000 -c-1 -o",
+    "start": "http-server -p 3000 -c-1",
     "prepare": "husky"
   },
   "keywords": [
@@ -35,6 +43,7 @@
     "eslint": "^8.50.0",
     "fast-check": "^4.5.3",
     "html-minifier": "^4.0.0",
+    "http-server": "^14.1.1",
     "husky": "^9.1.7",
     "jest": "^29.7.0",
     "jest-environment-jsdom": "^29.7.0",
@@ -44,7 +53,9 @@
   },
   "jest": {
     "testEnvironment": "jsdom",
-    "setupFilesAfterEnv": ["<rootDir>/jest.setup.js"],
+    "setupFilesAfterEnv": [
+      "<rootDir>/jest.setup.js"
+    ],
     "collectCoverageFrom": [
       "js/**/*.js",
       "!js/**/*.test.js",

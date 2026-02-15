@@ -174,22 +174,33 @@ function hideToast(toastId) {
  * @param {string} tabName - Name of the tab to show
  */
 function showTab(tabName) {
-  // Hide all tabs
+  // First, remove active class from all tabs (triggers fade out)
   document.querySelectorAll('.main-container, .tab-content').forEach(tab => {
     tab.classList.remove('active');
-    tab.style.display = 'none';
   });
 
-  // Show selected tab
-  const targetTab = document.getElementById(`${tabName}-tab`);
-  if (targetTab) {
-    if (tabName === 'home') {
-      targetTab.style.display = 'flex';
-    } else {
-      targetTab.style.display = 'block';
+  // Wait for fade out transition, then hide and show
+  setTimeout(() => {
+    document.querySelectorAll('.main-container, .tab-content').forEach(tab => {
+      tab.style.display = 'none';
+    });
+
+    // Show selected tab
+    const targetTab = document.getElementById(`${tabName}-tab`);
+    if (targetTab) {
+      if (tabName === 'home') {
+        targetTab.style.display = 'flex';
+      } else {
+        targetTab.style.display = 'block';
+      }
+      
+      // Trigger reflow to ensure transition works
+      targetTab.offsetHeight;
+      
+      // Add active class to trigger fade in
       targetTab.classList.add('active');
     }
-  }
+  }, 300); // Match the CSS transition duration
 
   // Update nav items
   document.querySelectorAll('.nav-item').forEach(item => {
@@ -627,6 +638,53 @@ function initializeUI() {
           const error = new Error('Clipboard access failed');
           window.API.handleNetworkError(error, 'clipboard copy');
         }
+      }
+    });
+  }
+
+  // PDF Export handler
+  const exportPdfBtn = document.getElementById('export-pdf-btn');
+  if (exportPdfBtn) {
+    exportPdfBtn.addEventListener('click', () => {
+      // Check if PDF export is available
+      if (!window.PDFExport || !window.PDFExport.isAvailable()) {
+        window.showToast('PDF export library not loaded. Please refresh the page.', 'error', 5000);
+        return;
+      }
+
+      // Get FIR data from modal
+      const firContent = document.getElementById('fir-content').textContent;
+      const sourceFilename = document.getElementById('source-filename').textContent;
+      const timestamp = document.getElementById('modal-timestamp').textContent;
+
+      if (!firContent) {
+        window.showToast('No FIR content to export', 'warning');
+        return;
+      }
+
+      // Extract FIR number from source filename
+      const firNumberMatch = sourceFilename.match(/FIR #([^\s]+)/);
+      const firNumber = firNumberMatch ? firNumberMatch[1] : null;
+
+      // Create FIR data object
+      const firData = {
+        number: firNumber,
+        content: firContent,
+        fir_content: firContent,
+        date: new Date().toISOString(),
+        policeStation: 'Moggapair West (V7)',
+        status: 'generated'
+      };
+
+      // Export as PDF
+      try {
+        window.PDFExport.export(firData, {
+          download: true,
+          print: false
+        });
+      } catch (error) {
+        console.error('PDF export failed:', error);
+        window.showToast('Failed to export PDF', 'error');
       }
     });
   }

@@ -48,28 +48,46 @@
     --modal-overlay: rgba(0, 0, 0, 0.5);
 }
 
-/* Light theme (future implementation) */
-/* 
+/* Light theme */
 body.light-mode {
     --bg-primary: #ffffff;
-    --bg-secondary: rgba(243, 244, 246, 1);
-    --bg-tertiary: rgba(229, 231, 235, 1);
-    --bg-hover: rgba(209, 213, 219, 1);
+    --bg-secondary: rgba(249, 250, 251, 1);
+    --bg-tertiary: rgba(243, 244, 246, 1);
+    --bg-hover: rgba(229, 231, 235, 1);
     
-    --text-primary: #000000;
-    --text-secondary: rgba(55, 65, 81, 1);
-    --text-tertiary: rgb(107, 114, 128);
-    --text-muted: rgb(156, 163, 175);
+    --text-primary: #111827;
+    --text-secondary: #374151;
+    --text-tertiary: #6b7280;
+    --text-muted: #9ca3af;
     
     --border-primary: rgba(209, 213, 219, 1);
     --border-secondary: rgba(229, 231, 235, 1);
     --border-hover: rgb(156, 163, 175);
     
+    /* Accent colors remain the same for consistency */
+    --accent-success: #10b981;
+    --accent-error: #ef4444;
+    --accent-warning: #f59e0b;
+    --accent-info: #3b82f6;
+    
+    /* Status colors for light mode */
+    --status-pending-bg: rgba(243, 244, 246, 1);
+    --status-pending-text: #6b7280;
+    --status-pending-border: rgba(209, 213, 219, 1);
+    
+    --status-investigating-bg: #dbeafe;
+    --status-investigating-text: #1e40af;
+    --status-investigating-border: rgba(147, 197, 253, 0.5);
+    
+    --status-closed-bg: #f3f4f6;
+    --status-closed-text: #4b5563;
+    --status-closed-border: rgb(209, 213, 219);
+    
+    /* Modal colors */
     --modal-bg: rgb(255, 255, 255);
     --modal-border: rgb(229, 231, 235);
-    --modal-overlay: rgba(0, 0, 0, 0.3);
+    --modal-overlay: rgba(0, 0, 0, 0.4);
 }
-*/
 
 /* High contrast theme (future implementation for accessibility) */
 /*
@@ -134,4 +152,140 @@ body {
     body {
         transition: none;
     }
+}
+
+/* Light mode specific overrides */
+body.light-mode .navbar {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+}
+
+body.light-mode .search-input,
+body.light-mode .fir-search-input,
+body.light-mode .fir-filter-select {
+    background: rgba(0, 0, 0, 0.03);
+    border-color: var(--border-primary);
+    color: var(--text-primary);
+}
+
+body.light-mode .search-input::placeholder,
+body.light-mode .fir-search-input::placeholder {
+    color: var(--text-muted);
+}
+
+body.light-mode .search-input:focus,
+body.light-mode .fir-search-input:focus,
+body.light-mode .fir-filter-select:focus {
+    background: rgba(0, 0, 0, 0.05);
+    border-color: var(--accent-info);
+}
+
+body.light-mode .file-upload-item {
+    background: var(--bg-tertiary);
+    border-color: var(--border-primary);
+}
+
+body.light-mode .file-upload-item:hover {
+    background: var(--bg-hover);
+}
+
+body.light-mode .generate-btn {
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+}
+
+body.light-mode .generate-btn:hover:not(:disabled) {
+    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+}
+
+body.light-mode .toast {
+    background: var(--bg-primary);
+    border: 1px solid var(--border-primary);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+body.light-mode .toast.success {
+    border-left-color: var(--accent-success);
+}
+
+body.light-mode .toast.error {
+    border-left-color: var(--accent-error);
+}
+
+body.light-mode .toast.warning {
+    border-left-color: var(--accent-warning);
+}
+
+body.light-mode .toast.info {
+    border-left-color: var(--accent-info);
+}
+
+/* Dark mode toggle button styles */
+.theme-toggle {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.theme-toggle:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(99, 102, 241, 0.5);
+}
+
+.theme-toggle svg {
+    width: 1.25rem;
+    height: 1.25rem;
+    color: #fff;
+    transition: transform 0.3s ease;
+}
+
+.theme-toggle:hover svg {
+    transform: rotate(20deg);
+}
+
+body.light-mode .theme-toggle {
+    background: rgba(0, 0, 0, 0.03);
+    border-color: var(--border-primary);
+}
+
+body.light-mode .theme-toggle:hover {
+    background: rgba(0, 0, 0, 0.05);
+}
+
+body.light-mode .theme-toggle svg {
+    color: var(--text-primary);
+}
+
+/* Icon transitions for theme toggle */
+.theme-toggle .icon-sun,
+.theme-toggle .icon-moon {
+    position: absolute;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.theme-toggle .icon-sun {
+    opacity: 0;
+    transform: rotate(-90deg) scale(0.8);
+}
+
+.theme-toggle .icon-moon {
+    opacity: 1;
+    transform: rotate(0deg) scale(1);
+}
+
+body.light-mode .theme-toggle .icon-sun {
+    opacity: 1;
+    transform: rotate(0deg) scale(1);
+}
+
+body.light-mode .theme-toggle .icon-moon {
+    opacity: 0;
+    transform: rotate(90deg) scale(0.8);
 }

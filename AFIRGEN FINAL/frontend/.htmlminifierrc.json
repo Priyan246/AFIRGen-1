@@ -1,0 +1,15 @@
+{
+  "collapseWhitespace": true,
+  "removeComments": true,
+  "removeRedundantAttributes": true,
+  "removeScriptTypeAttributes": true,
+  "removeStyleLinkTypeAttributes": true,
+  "minifyCSS": true,
+  "minifyJS": true,
+  "minifyURLs": true,
+  "useShortDoctype": true,
+  "removeEmptyAttributes": false,
+  "keepClosingSlash": true,
+  "caseSensitive": true,
+  "conservativeCollapse": false
+}

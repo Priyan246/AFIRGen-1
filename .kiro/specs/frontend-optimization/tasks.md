@@ -207,100 +207,100 @@ This implementation plan breaks down the frontend optimization into discrete, ac
     - Test all API endpoints
     - _Requirements: 5.1.6, 5.1.7_
 
-- [ ] 10. Implement minification and bundling
-  - [ ] 10.1 Create build scripts
+- [x] 10. Implement minification and bundling
+  - [x] 10.1 Create build scripts
     - Add npm script: build:css (cssnano)
     - Add npm script: build:js (terser)
     - Add npm script: build:html (html-minifier)
     - Add npm script: build (run all)
     - _Requirements: 5.6.6_
   
-  - [ ] 10.2 Configure minification tools
+  - [x] 10.2 Configure minification tools
     - Configure terser: mangle, compress, source maps
     - Configure cssnano: preset-default
     - Configure html-minifier: collapseWhitespace, removeComments
     - _Requirements: 5.6.6_
   
-  - [ ] 10.3 Create dist/ output directory
+  - [x] 10.3 Create dist/ output directory
     - Build minified files to dist/
     - Copy assets to dist/assets/
     - Generate source maps
     - _Requirements: 5.6.6, 5.6.7_
   
-  - [ ] 10.4 Verify bundle sizes
+  - [x] 10.4 Verify bundle sizes
     - Measure gzipped sizes
     - Verify main.css <50KB
     - Verify app.js <100KB
     - Verify total <500KB
     - _Requirements: 5.1.5_
 
-- [ ] 11. Implement service worker for offline capability
-  - [ ] 11.1 Create sw.js service worker
+- [x] 11. Implement service worker for offline capability
+  - [x] 11.1 Create sw.js service worker
     - Implement install event (cache static assets)
     - Implement activate event (clean old caches)
     - Implement fetch event (cache-first for assets, network-first for API)
     - Define cache names and versions
     - _Requirements: 5.1.8, 5.5.6_
   
-  - [ ] 11.2 Register service worker in app.js
+  - [x] 11.2 Register service worker in app.js
     - Check if service worker supported
     - Register sw.js
     - Handle registration success/failure
     - _Requirements: 5.1.8_
   
-  - [ ] 11.3 Write property test for offline mode
+  - [x] 11.3 Write property test for offline mode
     - **Property 6: Offline Mode Functionality**
     - **Validates: Requirements 5.5.6**
     - Load application, go offline
     - Verify cached data accessible and operations queued
   
-  - [ ] 11.4 Implement offline fallback page
+  - [x] 11.4 Implement offline fallback page
     - Create offline.html
     - Show friendly message when offline
     - Cache offline.html in service worker
     - _Requirements: 5.5.6_
 
-- [ ] 12. Optimize assets
-  - [ ] 12.1 Optimize images
+- [x] 12. Optimize assets
+  - [x] 12.1 Optimize images
     - Convert images to WebP format
     - Compress images (quality 85)
     - Add lazy loading to images
     - Use responsive images (srcset)
     - _Requirements: 5.1.3_
   
-  - [ ] 12.2 Optimize fonts
+  - [x] 12.2 Optimize fonts
     - Use system fonts where possible
     - Subset custom fonts (only needed characters)
     - Preload critical fonts
     - Use font-display: swap
     - _Requirements: 5.1.3_
   
-  - [ ] 12.3 Add resource hints
+  - [x] 12.3 Add resource hints
     - Add preconnect to API domain
     - Add dns-prefetch for CDN
     - Add prefetch for critical resources
     - _Requirements: 5.1.4_
 
-- [ ] 13. Run performance tests
-  - [ ] 13.1 Run Lighthouse audit
+- [x] 13. Run performance tests
+  - [x] 13.1 Run Lighthouse audit
     - Run Lighthouse in Chrome DevTools
     - Verify performance score >90
     - Verify FCP <1s, TTI <3s
     - Fix any issues identified
     - _Requirements: 5.1.4_
   
-  - [ ] 13.2 Test on 3G network
+  - [x] 13.2 Test on 3G network
     - Use Chrome DevTools network throttling
     - Verify page load <2s on 3G
     - Verify app usable on slow connection
     - _Requirements: 5.1.1_
   
-  - [ ] 13.3 Measure bundle sizes
+  - [x] 13.3 Measure bundle sizes
     - Verify total bundle <500KB gzipped
     - Verify no single file >200KB
     - _Requirements: 5.1.5_
 
-- [ ] 14. Checkpoint - Validate Phase 2
+- [x] 14. Checkpoint - Validate Phase 2
   - Run all tests (unit, property, E2E)
   - Run Lighthouse audit (score >90)
   - Verify bundle sizes <500KB
@@ -310,8 +310,8 @@ This implementation plan breaks down the frontend optimization into discrete, ac
 
 ### Phase 3: New Features (P1 - High Priority)
 
-- [ ] 15. Implement FIR history feature
-  - [ ] 15.1 Create storage.js module
+- [x] 15. Implement FIR history feature
+  - [x] 15.1 Create storage.js module
     - Implement setLocal(key, value, ttl) for LocalStorage
     - Implement getLocal(key) for LocalStorage
     - Implement setDB(store, key, value) for IndexedDB
@@ -319,7 +319,7 @@ This implementation plan breaks down the frontend optimization into discrete, ac
     - Implement getAllDB(store) for IndexedDB
     - _Requirements: 5.5.5_
   
-  - [ ] 15.2 Create FIR history UI
+  - [x] 15.2 Create FIR history UI
     - Update sidebar to show dynamic FIR list
     - Add search input for FIR history
     - Add filter dropdown (status)
@@ -327,21 +327,21 @@ This implementation plan breaks down the frontend optimization into discrete, ac
     - Add pagination or infinite scroll
     - _Requirements: 5.5.1_
   
-  - [ ] 15.3 Implement FIR history data fetching
+  - [x] 15.3 Implement FIR history data fetching
     - Create getFIRList() function in api.js
     - Fetch FIR list from backend (GET /fir/list)
     - Cache FIR list in IndexedDB
     - Refresh on page load and after new FIR
     - _Requirements: 5.5.1_
   
-  - [ ] 15.4 Implement search and filter
+  - [x] 15.4 Implement search and filter
     - Filter by FIR number, complainant, date
     - Filter by status (pending, investigating, closed)
     - Sort by date (newest first)
     - Update UI in real-time
     - _Requirements: 5.5.1_
   
-  - [ ] 15.5 Test FIR history feature
+  - [x] 15.5 Test FIR history feature
     - Test with empty list
     - Test with 100+ FIRs
     - Test search functionality
@@ -349,8 +349,8 @@ This implementation plan breaks down the frontend optimization into discrete, ac
     - Test pagination
     - _Requirements: 5.5.1_
 
-- [ ] 16. Implement dark mode
-  - [ ] 16.1 Create themes.css with dark mode styles
+- [-] 16. Implement dark mode
+  - [x] 16.1 Create themes.css with dark mode styles
     - Define CSS custom properties for colors
     - Create .dark-mode class with dark colors
     - Ensure contrast ratio >4.5:1 for text
@@ -363,28 +363,28 @@ This implementation plan breaks down the frontend optimization into discrete, ac
     - Enable dark mode
     - Measure contrast ratios for all text and UI elements
   
-  - [ ] 16.3 Add dark mode toggle button
+  - [x] 16.3 Add dark mode toggle button
     - Add toggle button to navbar
     - Implement toggleDarkMode() function
     - Toggle .dark-mode class on <body>
     - Persist preference in LocalStorage
     - _Requirements: 5.5.4_
   
-  - [ ] 16.4 Test dark mode
+  - [x] 16.4 Test dark mode
     - Test all pages in dark mode
     - Verify contrast ratios
     - Test toggle persistence
     - Test smooth transition
     - _Requirements: 5.5.4_
 
-- [ ] 17. Implement drag-and-drop file upload
-  - [ ] 17.1 Create drag-and-drop zone
+- [x] 17. Implement drag-and-drop file upload
+  - [x] 17.1 Create drag-and-drop zone
     - Add drop zone UI to file upload area
     - Style drop zone with dashed border
     - Add hover state for drag-over
     - _Requirements: 5.2.4_
   
-  - [ ] 17.2 Implement drag-and-drop handlers
+  - [x] 17.2 Implement drag-and-drop handlers
     - Add dragover event listener
     - Add dragleave event listener
     - Add drop event listener
@@ -392,20 +392,20 @@ This implementation plan breaks down the frontend optimization into discrete, ac
     - Validate dropped files
     - _Requirements: 5.2.4_
   
-  - [ ] 17.3 Add visual feedback
+  - [x] 17.3 Add visual feedback
     - Highlight drop zone on drag-over
     - Show file preview after drop
     - Show error if invalid file
     - _Requirements: 5.2.4_
   
-  - [ ] 17.4 Test drag-and-drop
+  - [x] 17.4 Test drag-and-drop
     - Test with valid files
     - Test with invalid files
     - Test with multiple files
     - Test on different browsers
     - _Requirements: 5.2.4_
 
-- [ ] 18. Checkpoint - Validate Phase 3
+- [x] 18. Checkpoint - Validate Phase 3
   - Test FIR history with various data
   - Test dark mode on all pages
   - Test drag-and-drop file upload
@@ -415,8 +415,8 @@ This implementation plan breaks down the frontend optimization into discrete, ac
 
 ### Phase 4: Advanced Features (P2 - Nice to Have)
 
-- [ ] 19. Implement PDF export
-  - [ ] 19.1 Integrate jsPDF library
+- [-] 19. Implement PDF export
+  - [x] 19.1 Integrate jsPDF library
     - Download jspdf.min.js to lib/
     - Create pdf.js module
     - Implement generatePDF(firData, options)
@@ -430,7 +430,7 @@ This implementation plan breaks down the frontend optimization into discrete, ac
     - Generate PDFs from various FIR data
     - Verify all fields present and formatting correct
   
-  - [ ] 19.3 Design PDF layout
+  - [x] 19.3 Design PDF layout
     - A4 portrait format
     - Header: FIR number, date
     - Body: All FIR fields
@@ -438,102 +438,102 @@ This implementation plan breaks down the frontend optimization into discrete, ac
     - Professional formatting
     - _Requirements: 5.5.2_
   
-  - [ ] 19.4 Add PDF export button to modal
+  - [x] 19.4 Add PDF export button to modal
     - Add "Export PDF" button to FIR modal
     - Trigger PDF generation on click
     - Download PDF automatically
     - Show success toast
     - _Requirements: 5.5.2_
   
-  - [ ] 19.5 Test PDF export
+  - [x] 19.5 Test PDF export
     - Test with various FIR data
     - Verify all fields included
     - Verify formatting correct
     - Test download functionality
     - _Requirements: 5.5.2_
 
-- [ ] 20. Implement PWA features
-  - [ ] 20.1 Create manifest.json
+- [x] 20. Implement PWA features
+  - [x] 20.1 Create manifest.json
     - Define app name, short name
     - Add icons (192x192, 512x512)
     - Set start_url, display, theme_color
     - _Requirements: 5.5.8_
   
-  - [ ] 20.2 Add manifest to index.html
+  - [x] 20.2 Add manifest to index.html
     - Link manifest.json in <head>
     - Add theme-color meta tag
     - Add apple-touch-icon
     - _Requirements: 5.5.8_
   
-  - [ ] 20.3 Implement install prompt
+  - [x] 20.3 Implement install prompt
     - Listen for beforeinstallprompt event
     - Show "Add to Home Screen" button
     - Trigger install prompt on button click
     - Hide button after install
     - _Requirements: 5.5.8_
   
-  - [ ] 20.4 Test PWA installation
+  - [x] 20.4 Test PWA installation
     - Test on Chrome (desktop and mobile)
     - Test on Safari (iOS)
     - Verify app installs correctly
     - Verify app works offline
     - _Requirements: 5.5.8_
 
-- [ ] 21. Implement advanced accessibility features
-  - [ ] 21.1 Add ARIA live regions
+- [x] 21. Implement advanced accessibility features
+  - [x] 21.1 Add ARIA live regions
     - Add aria-live="polite" to toast container
     - Add aria-live="assertive" to status messages
     - Add aria-busy="true" to loading states
     - _Requirements: 5.4.2_
   
-  - [ ] 21.2 Implement focus management
+  - [x] 21.2 Implement focus management
     - Focus trap in modals
     - Return focus to trigger after modal close
     - Move focus to first element in modal on open
     - _Requirements: 5.4.5_
   
-  - [ ] 21.3 Add screen reader announcements
+  - [x] 21.3 Add screen reader announcements
     - Announce status changes
     - Announce errors immediately
     - Announce success after completion
     - _Requirements: 5.4.4_
   
-  - [ ] 21.4 Test with screen readers
+  - [x] 21.4 Test with screen readers
     - Test with NVDA (Windows)
     - Test with VoiceOver (macOS/iOS)
     - Verify all content accessible
     - Verify announcements work
     - _Requirements: 5.4.4_
 
-- [ ] 22. Implement real-time validation feedback
-  - [ ] 22.1 Add input event listeners
+- [-] 22. Implement real-time validation feedback
+  - [x] 22.1 Add input event listeners
     - Listen for input events on all form fields
     - Debounce validation (300ms)
     - Show inline error messages
     - Highlight invalid fields
     - _Requirements: 5.2.5_
   
-  - [ ] 22.2 Write property test for form validation feedback
+  - [x] 22.2 Write property test for form validation feedback
     - **Property 9: Form Validation Feedback**
     - **Validates: Requirements 5.2.5**
     - Enter invalid data in form fields
     - Measure time to error message display
   
-  - [ ] 22.3 Style validation feedback
+  - [x] 22.3 Style validation feedback
     - Red border for invalid fields
     - Green border for valid fields
     - Inline error message below field
     - Icon indicator (✓ or ✗)
     - _Requirements: 5.2.5_
   
-  - [ ] 22.4 Test validation feedback
+  - [x] 22.4 Test validation feedback
     - Test with various invalid inputs
     - Verify error messages appear <300ms
     - Verify error messages are helpful
     - Test on all form fields
     - _Requirements: 5.2.5_
 
-- [ ] 23. Checkpoint - Validate Phase 4
+- [x] 23. Checkpoint - Validate Phase 4
   - Test PDF export with various FIRs
   - Test PWA installation
   - Test advanced accessibility features
@@ -563,69 +563,175 @@ This implementation plan breaks down the frontend optimization into discrete, ac
     - Reduce motion for users with prefers-reduced-motion
     - _Requirements: 5.2.8_
 
-- [ ] 25. Implement print styles
-  - [ ] 25.1 Create print.css
+### Phase 6: Visual Effects & Animations (P2 - Nice to Have)
+
+- [ ] 35. Implement advanced visual effects
+  - [ ] 35.1 Add particle effects
+    - Create particle system for page load
+    - Implement floating particles in background
+    - Add confetti effect for success actions
+    - Optimize particle rendering for performance
+  
+  - [ ] 35.2 Add glassmorphism effects
+    - Apply frosted glass effect to cards
+    - Add backdrop blur to modals
+    - Implement translucent overlays
+    - Ensure cross-browser compatibility
+  
+  - [ ] 35.3 Add parallax scrolling
+    - Implement parallax effect on hero section
+    - Add depth layers to background elements
+    - Optimize for smooth 60fps scrolling
+  
+  - [ ] 35.4 Add cursor effects
+    - Implement custom cursor trail
+    - Add ripple effect on clicks
+    - Create glow effect following cursor
+    - Disable on mobile devices
+
+- [ ] 36. Implement advanced animations
+  - [ ] 36.1 Add text reveal animations
+    - Implement fade-in text on scroll
+    - Add typewriter effect for hero text
+    - Create staggered letter animations
+    - Use Intersection Observer for performance
+  
+  - [ ] 36.2 Add morphing transitions
+    - Implement smooth state transitions
+    - Add card flip animations for FIR items
+    - Create expanding/collapsing animations
+    - Use CSS transforms for smooth 60fps
+  
+  - [ ] 36.3 Add loading animations
+    - Create custom animated spinners
+    - Implement skeleton screens with shimmer
+    - Add progress bar animations
+    - Design success/error animations
+  
+  - [ ] 36.4 Add hover effects
+    - Implement scale and glow on hover
+    - Add shadow lift effects
+    - Create magnetic button effects
+    - Add smooth color transitions
+
+- [ ] 37. Implement floating elements
+  - [ ] 37.1 Add floating UI elements
+    - Create floating action buttons
+    - Implement floating labels
+    - Add floating tooltips with animations
+    - Ensure accessibility for floating elements
+  
+  - [ ] 37.2 Add subtle motion effects
+    - Implement gentle floating animation
+    - Add breathing effect to elements
+    - Create wave animations
+    - Use CSS animations for performance
+
+- [ ] 38. Add SVG animations
+  - [ ] 38.1 Animate icons
+    - Create animated icon transitions
+    - Add morphing SVG icons
+    - Implement loading icon animations
+    - Optimize SVG file sizes
+  
+  - [ ] 38.2 Add illustration animations
+    - Create animated illustrations for empty states
+    - Add success/error animated graphics
+    - Implement onboarding animations
+    - Use CSS or GSAP for smooth animations
+
+- [ ] 39. Optimize all visual effects
+  - [ ] 39.1 Performance optimization
+    - Use GPU acceleration (transform, opacity)
+    - Implement will-change for animated elements
+    - Lazy load heavy animations
+    - Test on low-end devices
+  
+  - [ ] 39.2 Accessibility considerations
+    - Respect prefers-reduced-motion
+    - Provide toggle for animations
+    - Ensure effects don't cause seizures
+    - Test with screen readers
+  
+  - [ ] 39.3 Cross-browser testing
+    - Test on Chrome, Firefox, Safari, Edge
+    - Ensure fallbacks for unsupported features
+    - Test on mobile devices
+    - Verify smooth 60fps animations
+
+- [ ] 40. Checkpoint - Validate Phase 6
+  - Test all visual effects on various devices
+  - Verify 60fps performance for animations
+  - Test with prefers-reduced-motion enabled
+  - Ensure no accessibility regressions
+  - Run Lighthouse audit (performance >90)
+  - Ensure all tests pass, ask the user if questions arise.
+
+### Phase 7: Polish and Testing (P2 - Nice to Have)
+
+- [ ] 41. Implement print styles
+  - [ ] 41.1 Create print.css
     - Hide navigation and sidebar
     - Optimize layout for printing
     - Use print-friendly colors
     - Add page breaks
     - _Requirements: 5.5.3_
   
-  - [ ] 25.2 Add print button
+  - [ ] 41.2 Add print button
     - Add "Print" button to FIR modal
     - Trigger window.print() on click
     - _Requirements: 5.5.3_
   
-  - [ ] 25.3 Test print functionality
+  - [ ] 41.3 Test print functionality
     - Test print preview
     - Verify layout correct
     - Test on different browsers
     - _Requirements: 5.5.3_
 
-- [ ] 26. Write comprehensive unit tests
-  - [ ] 26.1 Write tests for api.js
+- [ ] 42. Write comprehensive unit tests
+  - [ ] 42.1 Write tests for api.js
     - Test request() method
     - Test retry logic
     - Test caching
     - Test error handling
     - _Requirements: 5.6.3_
   
-  - [ ] 26.2 Write tests for validation.js
+  - [ ] 42.2 Write tests for validation.js
     - Test file validation
     - Test input validation
     - Test form validation
     - _Requirements: 5.6.3_
   
-  - [ ] 26.3 Write tests for security.js
+  - [ ] 42.3 Write tests for security.js
     - Test sanitizeHTML()
     - Test sanitizeText()
     - Test XSS prevention
     - _Requirements: 5.6.3_
   
-  - [ ] 26.4 Write tests for ui.js
+  - [ ] 42.4 Write tests for ui.js
     - Test showToast()
     - Test showLoading()
     - Test showModal()
     - _Requirements: 5.6.3_
   
-  - [ ] 26.5 Write tests for storage.js
+  - [ ] 42.5 Write tests for storage.js
     - Test LocalStorage operations
     - Test IndexedDB operations
     - _Requirements: 5.6.3_
   
-  - [ ] 26.6 Verify test coverage >80%
+  - [ ] 42.6 Verify test coverage >80%
     - Run coverage report
     - Add tests for uncovered code
     - _Requirements: 5.6.3_
 
-- [ ] 27. Write E2E tests
-  - [ ] 27.1 Set up Playwright
+- [ ] 43. Write E2E tests
+  - [ ] 43.1 Set up Playwright
     - Install Playwright
     - Configure playwright.config.js
     - Create tests/ directory
     - _Requirements: 5.6.4_
   
-  - [ ] 27.2 Write critical flow tests
+  - [ ] 43.2 Write critical flow tests
     - Test: Upload file → Generate FIR → Validate → Complete
     - Test: Search FIR history → View details
     - Test: Export FIR to PDF
@@ -633,74 +739,74 @@ This implementation plan breaks down the frontend optimization into discrete, ac
     - Test: Offline mode → Queue operation → Sync
     - _Requirements: 5.6.4_
   
-  - [ ] 27.3 Run E2E tests
+  - [ ] 43.3 Run E2E tests
     - Run tests on Chrome, Firefox, Safari
     - Verify all tests pass
     - Fix any failures
     - _Requirements: 5.6.4_
 
-- [ ] 28. Run final accessibility audit
-  - [ ] 28.1 Run Lighthouse accessibility audit
+- [ ] 44. Run final accessibility audit
+  - [ ] 44.1 Run Lighthouse accessibility audit
     - Verify score >90
     - Fix any issues
     - _Requirements: 5.4.8_
   
-  - [ ] 28.2 Run axe DevTools scan
+  - [ ] 44.2 Run axe DevTools scan
     - Scan all pages
     - Fix any critical/serious issues
     - _Requirements: 5.4.8_
   
-  - [ ] 28.3 Test with screen readers
+  - [ ] 44.3 Test with screen readers
     - Test with NVDA
     - Test with VoiceOver
     - Verify all content accessible
     - _Requirements: 5.4.4_
   
-  - [ ] 28.4 Test keyboard navigation
+  - [ ] 44.4 Test keyboard navigation
     - Navigate entire app with keyboard only
     - Verify all features accessible
     - Verify focus indicators visible
     - _Requirements: 5.4.3_
 
-- [ ] 29. Run final performance audit
-  - [ ] 29.1 Run Lighthouse performance audit
+- [ ] 45. Run final performance audit
+  - [ ] 45.1 Run Lighthouse performance audit
     - Verify score >90
     - Verify FCP <1s, TTI <3s
     - Fix any issues
     - _Requirements: 5.1.4_
   
-  - [ ] 29.2 Test on slow network
+  - [ ] 45.2 Test on slow network
     - Test on 3G network
     - Verify page load <2s
     - Verify app usable
     - _Requirements: 5.1.1_
   
-  - [ ] 29.3 Verify bundle sizes
+  - [ ] 45.3 Verify bundle sizes
     - Verify total <500KB gzipped
     - Verify no regressions
     - _Requirements: 5.1.5_
 
-- [ ] 30. Create documentation
-  - [ ] 30.1 Write README.md
+- [ ] 46. Create documentation
+  - [ ] 46.1 Write README.md
     - Project overview
     - Setup instructions
     - Build instructions
     - Deployment instructions
     - _Requirements: 5.6.5_
   
-  - [ ] 30.2 Write API documentation
+  - [ ] 46.2 Write API documentation
     - Document all modules
     - Document all functions
     - Add JSDoc comments
     - _Requirements: 5.6.5_
   
-  - [ ] 30.3 Write user guide
+  - [ ] 46.3 Write user guide
     - How to use the application
     - Feature descriptions
     - Troubleshooting
     - _Requirements: 5.6.5_
 
-- [ ] 31. Final checkpoint - Production readiness
+- [ ] 47. Final checkpoint - Production readiness
   - All tests passing (unit, property, E2E)
   - Lighthouse score >90 (all categories)
   - Bundle size <500KB gzipped
@@ -709,23 +815,23 @@ This implementation plan breaks down the frontend optimization into discrete, ac
   - Code reviewed and approved
   - Ensure all tests pass, ask the user if questions arise.
 
-### Phase 6: Deployment
+### Phase 8: Deployment
 
-- [ ] 32. Update Dockerfile
+- [ ] 48. Update Dockerfile
   - Update Dockerfile to copy dist/ instead of current files
   - Configure nginx to serve minified files
   - Add gzip compression in nginx
   - Test Docker build
   - _Requirements: 5.6.6_
 
-- [ ] 33. Deploy to staging
+- [ ] 49. Deploy to staging
   - Build production bundle
   - Deploy to staging environment
   - Run smoke tests
   - Verify all features work
   - _Requirements: 5.6.6_
 
-- [ ] 34. Deploy to production
+- [ ] 50. Deploy to production
   - Build production bundle
   - Deploy to production environment
   - Monitor for errors

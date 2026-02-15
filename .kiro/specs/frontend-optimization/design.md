@@ -804,6 +804,23 @@ envsubst < config.js.template > config.js
 - Advanced error recovery
 - Performance monitoring
 
+### 13.6 Phase 6: Visual Effects & Animations (P2)
+- Particle effects on page load
+- Animated gradient backgrounds with flow effects
+- Glassmorphism effects on cards and modals
+- Parallax scrolling effects
+- Hover animations with scale and glow effects
+- Text reveal animations on scroll
+- Floating elements with subtle motion
+- Ripple effects on button clicks
+- Animated icons and SVG illustrations
+- Cursor trail effects
+- Page transition animations with fade/slide
+- Loading animations with custom spinners
+- Success/error animations with confetti or shake effects
+- Smooth morphing transitions between states
+- 3D card flip effects for FIR items
+
 ## 14. Success Metrics
 
 **Performance:**

@@ -63,11 +63,11 @@ class APIClient {
   async get(endpoint, params = {}, options = {}) {
     // Build query string
     const queryString = Object.keys(params).length > 0
-      ? '?' + new URLSearchParams(params).toString()
+      ? `?${new URLSearchParams(params).toString()}`
       : '';
-    
+
     const fullEndpoint = endpoint + queryString;
-    
+
     // Check cache if enabled (default: true for GET requests)
     const useCache = options.useCache !== false;
     if (useCache) {

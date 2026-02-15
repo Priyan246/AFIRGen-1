@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Offline - AFIRGen</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      color: #333;
+    }
+
+    .offline-container {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      padding: 60px 40px;
+      max-width: 600px;
+      text-align: center;
+      animation: fadeIn 0.5s ease-in;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .offline-icon {
+      width: 120px;
+      height: 120px;
+      margin: 0 auto 30px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.05);
+      }
+    }
+
+    .offline-icon svg {
+      width: 60px;
+      height: 60px;
+      stroke: white;
+      stroke-width: 2;
+      fill: none;
+    }
+
+    h1 {
+      font-size: 32px;
+      font-weight: 700;
+      color: #1a202c;
+      margin-bottom: 16px;
+    }
+
+    p {
+      font-size: 18px;
+      color: #4a5568;
+      line-height: 1.6;
+      margin-bottom: 12px;
+    }
+
+    .status {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 24px;
+      background: #fed7d7;
+      color: #c53030;
+      border-radius: 8px;
+      font-weight: 600;
+      margin: 24px 0;
+    }
+
+    .status.online {
+      background: #c6f6d5;
+      color: #22543d;
+    }
+
+    .status-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: currentColor;
+      animation: blink 1.5s ease-in-out infinite;
+    }
+
+    @keyframes blink {
+      0%, 100% {
+        opacity: 1;
+      }
+      50% {
+        opacity: 0.3;
+      }
+    }
+
+    .actions {
+      margin-top: 32px;
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    button {
+      padding: 14px 32px;
+      font-size: 16px;
+      font-weight: 600;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-family: inherit;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+    }
+
+    .btn-secondary {
+      background: #e2e8f0;
+      color: #2d3748;
+    }
+
+    .btn-secondary:hover {
+      background: #cbd5e0;
+    }
+
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .info-box {
+      background: #ebf8ff;
+      border-left: 4px solid #3182ce;
+      padding: 16px;
+      margin-top: 32px;
+      text-align: left;
+      border-radius: 4px;
+    }
+
+    .info-box h3 {
+      font-size: 16px;
+      font-weight: 600;
+      color: #2c5282;
+      margin-bottom: 8px;
+    }
+
+    .info-box ul {
+      list-style: none;
+      padding-left: 0;
+    }
+
+    .info-box li {
+      font-size: 14px;
+      color: #2d3748;
+      padding: 4px 0;
+      padding-left: 24px;
+      position: relative;
+    }
+
+    .info-box li:before {
+      content: "✓";
+      position: absolute;
+      left: 0;
+      color: #3182ce;
+      font-weight: bold;
+    }
+
+    @media (max-width: 640px) {
+      .offline-container {
+        padding: 40px 24px;
+      }
+
+      h1 {
+        font-size: 24px;
+      }
+
+      p {
+        font-size: 16px;
+      }
+
+      .actions {
+        flex-direction: column;
+      }
+
+      button {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="offline-container">
+    <div class="offline-icon">
+      <svg viewBox="0 0 24 24">
+        <path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9z"/>
+        <path d="M9 17l3 3 3-3c-1.65-1.66-4.34-1.66-6 0z"/>
+        <path d="M5 13l2 2c2.76-2.76 7.24-2.76 10 0l2-2C15.14 9.14 8.87 9.14 5 13z"/>
+        <line x1="1" y1="1" x2="23" y2="23" stroke-linecap="round"/>
+      </svg>
+    </div>
+
+    <h1>You're Offline</h1>
+    <p>It looks like you've lost your internet connection.</p>
+    <p>Don't worry, you can still view cached content.</p>
+
+    <div class="status" id="connection-status">
+      <span class="status-dot"></span>
+      <span id="status-text">Offline</span>
+    </div>
+
+    <div class="actions">
+      <button class="btn-primary" onclick="retryConnection()">
+        Retry Connection
+      </button>
+      <button class="btn-secondary" onclick="goBack()">
+        Go Back
+      </button>
+    </div>
+
+    <div class="info-box">
+      <h3>What you can do offline:</h3>
+      <ul>
+        <li>View previously loaded pages</li>
+        <li>Access cached FIR data</li>
+        <li>Browse your FIR history</li>
+        <li>View saved documents</li>
+      </ul>
+    </div>
+  </div>
+
+  <script>
+    // Check connection status
+    function updateConnectionStatus() {
+      const status = document.getElementById('connection-status');
+      const statusText = document.getElementById('status-text');
+      
+      if (navigator.onLine) {
+        status.classList.add('online');
+        statusText.textContent = 'Back Online!';
+        
+        // Automatically redirect after 2 seconds
+        setTimeout(() => {
+          window.location.href = '/';
+        }, 2000);
+      } else {
+        status.classList.remove('online');
+        statusText.textContent = 'Offline';
+      }
+    }
+
+    // Retry connection
+    function retryConnection() {
+      updateConnectionStatus();
+      
+      if (navigator.onLine) {
+        window.location.href = '/';
+      } else {
+        // Try to fetch a small resource to check connectivity
+        fetch('/', { method: 'HEAD', cache: 'no-cache' })
+          .then(() => {
+            window.location.href = '/';
+          })
+          .catch(() => {
+            alert('Still offline. Please check your internet connection.');
+          });
+      }
+    }
+
+    // Go back to previous page
+    function goBack() {
+      if (window.history.length > 1) {
+        window.history.back();
+      } else {
+        window.location.href = '/';
+      }
+    }
+
+    // Listen for online/offline events
+    window.addEventListener('online', updateConnectionStatus);
+    window.addEventListener('offline', updateConnectionStatus);
+
+    // Initial status check
+    updateConnectionStatus();
+
+    // Periodic connection check (every 5 seconds)
+    setInterval(updateConnectionStatus, 5000);
+  </script>
+</body>
+</html>

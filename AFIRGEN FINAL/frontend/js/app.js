@@ -10,6 +10,7 @@ let isProcessing = false;
 let sessionId = null;
 let currentStep = null;
 let isProcessingValidation = false;
+let deferredPrompt = null;
 
 /**
  * Update files state and UI
@@ -276,11 +277,99 @@ async function updateFIRList() {
 }
 
 /**
+ * Initialize PWA install prompt
+ */
+function initializePWAInstall() {
+  // Listen for beforeinstallprompt event
+  window.addEventListener('beforeinstallprompt', (e) => {
+    // Prevent the mini-infobar from appearing on mobile
+    e.preventDefault();
+    
+    // Store the event for later use
+    deferredPrompt = e;
+    
+    console.log('[App] PWA install prompt available');
+    
+    // Show install button/toast to user
+    window.showToast(
+      'Install AFIRGen for offline access and better experience!',
+      'info',
+      10000
+    );
+  });
+
+  // Listen for app installed event
+  window.addEventListener('appinstalled', () => {
+    console.log('[App] PWA installed successfully');
+    deferredPrompt = null;
+    
+    window.showToast(
+      'AFIRGen installed successfully!',
+      'success',
+      5000
+    );
+  });
+}
+
+/**
+ * Trigger PWA install prompt
+ */
+async function promptPWAInstall() {
+  if (!deferredPrompt) {
+    console.log('[App] No install prompt available');
+    window.showToast(
+      'App is already installed or not installable',
+      'info',
+      3000
+    );
+    return;
+  }
+
+  // Show the install prompt
+  deferredPrompt.prompt();
+
+  // Wait for the user's response
+  const { outcome } = await deferredPrompt.userChoice;
+  
+  console.log(`[App] User response to install prompt: ${outcome}`);
+  
+  if (outcome === 'accepted') {
+    window.showToast('Installing AFIRGen...', 'success', 3000);
+  } else {
+    window.showToast('Installation cancelled', 'info', 3000);
+  }
+
+  // Clear the deferred prompt
+  deferredPrompt = null;
+}
+
+/**
  * Initialize application
  */
 function initializeApp() {
+  // Initialize theme (must be first to avoid flash)
+  if (window.Theme) {
+    window.Theme.init();
+  }
+
   // Initialize UI module
   window.initializeUI();
+
+  // Initialize FIR history
+  if (window.initFIRHistory) {
+    window.initFIRHistory().catch(error => {
+      console.error('Failed to initialize FIR history:', error);
+    });
+  }
+
+  // Initialize drag-and-drop
+  if (window.DragDrop) {
+    window.DragDrop.init('letter-drop-zone', 'letter-upload');
+    window.DragDrop.init('audio-drop-zone', 'audio-upload');
+  }
+
+  // Initialize PWA install prompt
+  initializePWAInstall();
 
   // File upload handlers
   const letterUpload = document.getElementById('letter-upload');
@@ -377,12 +466,83 @@ function initializeApp() {
 
   // Load initial FIR list
   updateFIRList();
+
+  // Register service worker for offline capability
+  registerServiceWorker();
+}
+
+/**
+ * Register service worker for offline capability
+ */
+async function registerServiceWorker() {
+  // Check if service workers are supported
+  if (!('serviceWorker' in navigator)) {
+    console.log('[App] Service workers are not supported in this browser');
+    return;
+  }
+
+  try {
+    // Register the service worker
+    const registration = await navigator.serviceWorker.register('/sw.js', {
+      scope: '/'
+    });
+
+    console.log('[App] Service worker registered successfully:', registration.scope);
+
+    // Handle updates
+    registration.addEventListener('updatefound', () => {
+      const newWorker = registration.installing;
+      console.log('[App] Service worker update found');
+
+      newWorker.addEventListener('statechange', () => {
+        if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+          // New service worker available
+          console.log('[App] New service worker available');
+          
+          // Show toast notification about update
+          window.showToast(
+            'A new version is available. Refresh to update.',
+            'info',
+            10000
+          );
+        }
+      });
+    });
+
+    // Check for updates periodically (every hour)
+    setInterval(() => {
+      registration.update();
+    }, 60 * 60 * 1000);
+
+  } catch (error) {
+    console.error('[App] Service worker registration failed:', error);
+    // Don't show error to user - offline capability is optional
+  }
+
+  // Listen for service worker messages
+  navigator.serviceWorker.addEventListener('message', (event) => {
+    if (event.data && event.data.type === 'CACHE_UPDATED') {
+      console.log('[App] Cache updated:', event.data.url);
+    }
+  });
+
+  // Handle online/offline events
+  window.addEventListener('online', () => {
+    console.log('[App] Back online');
+    window.showToast('Connection restored', 'success', 3000);
+  });
+
+  window.addEventListener('offline', () => {
+    console.log('[App] Gone offline');
+    window.showToast('You are offline. Some features may be limited.', 'warning', 5000);
+  });
 }
 
 // Expose functions to window for use in other modules
 window.handleValidation = handleValidation;
 window.handleRegenerate = handleRegenerate;
 window.updateFIRList = updateFIRList;
+window.promptPWAInstall = promptPWAInstall;
 
 // Initialize when DOM is ready
 if (document.readyState === 'loading') {

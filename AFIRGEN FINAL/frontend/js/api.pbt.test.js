@@ -8,7 +8,7 @@ const fc = require('fast-check');
 /**
  * Property 3: API Request Retry
  * **Validates: Requirements 5.1.7**
- * 
+ *
  * This property verifies that the API retry logic:
  * - Retries on network failures and 5xx responses
  * - Uses exponential backoff (1s, 2s, 4s)
@@ -88,7 +88,7 @@ describe('Property 3: API Request Retry', () => {
       async get(endpoint, params = {}) {
         return this.retryRequest(async () => {
           const queryString = Object.keys(params).length > 0
-            ? '?' + new URLSearchParams(params).toString()
+            ? `?${new URLSearchParams(params).toString()}`
             : '';
           const response = await this.request(endpoint + queryString, { method: 'GET' });
           if (!response.ok) {

@@ -1,0 +1,103 @@
+{
+  "name": "AFIRGen - AI-powered FIR Management",
+  "short_name": "AFIRGen",
+  "description": "Automated First Information Report generation using AI technology for efficient police complaint management",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#000000",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "icons": [
+    {
+      "src": "/assets/icon-72x72.png",
+      "sizes": "72x72",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/assets/icon-96x96.png",
+      "sizes": "96x96",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/assets/icon-128x128.png",
+      "sizes": "128x128",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/assets/icon-144x144.png",
+      "sizes": "144x144",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/assets/icon-152x152.png",
+      "sizes": "152x152",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/assets/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/assets/icon-384x384.png",
+      "sizes": "384x384",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/assets/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["productivity", "utilities", "government"],
+  "screenshots": [
+    {
+      "src": "/assets/screenshot-1.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "label": "AFIRGen Home Screen"
+    },
+    {
+      "src": "/assets/screenshot-2.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "label": "FIR Generation Interface"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "New FIR",
+      "short_name": "New FIR",
+      "description": "Create a new FIR",
+      "url": "/?action=new",
+      "icons": [
+        {
+          "src": "/assets/icon-192x192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "FIR History",
+      "short_name": "History",
+      "description": "View FIR history",
+      "url": "/?action=history",
+      "icons": [
+        {
+          "src": "/assets/icon-192x192.png",
+          "sizes": "192x192"
+        }
+      ]
+    }
+  ],
+  "prefer_related_applications": false
+}

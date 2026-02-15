@@ -1,0 +1,23 @@
+{
+  "compress": {
+    "dead_code": true,
+    "drop_console": false,
+    "drop_debugger": true,
+    "keep_classnames": false,
+    "keep_fnames": false,
+    "passes": 2
+  },
+  "mangle": {
+    "toplevel": false,
+    "keep_classnames": false,
+    "keep_fnames": false
+  },
+  "format": {
+    "comments": false,
+    "beautify": false
+  },
+  "sourceMap": {
+    "filename": "app.min.js",
+    "url": "app.min.js.map"
+  }
+}
