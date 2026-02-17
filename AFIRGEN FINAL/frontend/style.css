@@ -702,6 +702,57 @@ p {
         transform: translateY(0);
     }
 }
+.photo-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1rem;
+  margin-top: 2rem;
+  list-style: none;
+  padding: 0;
+}
+
+.photo-grid li {
+  cursor: pointer;
+}
+
+.photo-item {
+  position: relative;
+  overflow: hidden;
+  border-radius: 12px;
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  padding: 1.5rem;
+  color: white;
+  transition: transform 0.3s ease;
+}
+
+.photo-item:hover {
+  transform: scale(1.05);
+}
+
+/* Gradients */
+.gradient-1 {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.gradient-2 {
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+}
+
+.gradient-3 {
+  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+}
+
+.photo-item h3 {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-top: 1rem;
+  text-align: center;
+}
+
 
 /* Utility / Status */
 .hidden {
